@@ -1,1 +1,0 @@
-Eivind Hennestad
