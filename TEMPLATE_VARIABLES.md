@@ -1,0 +1,8 @@
+namespace_name
+uuid = matlab.lang.internal.uuid
+toolbox_name
+author_name
+author_email
+author_company
+toolbox_summary
+toolbox_description

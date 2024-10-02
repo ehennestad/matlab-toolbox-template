@@ -4,7 +4,7 @@
         "Identifier": "{{uuid}}",
         "ToolboxName": "{{toolbox_name}}",
         "AuthorName": "{{author_name}}",
-        "AuthorEmail": "{{author_name}}",
+        "AuthorEmail": "{{author_email}}",
         "AuthorCompany": "{{author_company}}",
         "Summary": "{{toolbox_summary}}",
         "Description": "{{toolbox_description}}",
