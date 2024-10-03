@@ -5,6 +5,8 @@ on:
   push:
     branches: [ "main" ]
     paths-ignore:
+    paths-ignore:
+      - 'setup.yml'
       - 'README.md'
       - 'tools/README.md'
       - '.github/workflows/**'
