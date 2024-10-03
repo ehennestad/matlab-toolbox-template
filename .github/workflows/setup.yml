@@ -27,7 +27,7 @@ jobs:
 
       - name: Set up license
         run: |
-          cp _setup/licenses/${LICENSE_TYPE}.txt LICENSE
+          cp _setup/licenses/${LICENSE}.txt LICENSE
 
       - name: Set up Python
         uses: actions/setup-python@v2
