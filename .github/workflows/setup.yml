@@ -12,7 +12,7 @@ jobs:
       is_first_commit: ${{ steps.check.outputs.is_first_commit }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Check if this is the first commit
         id: check
@@ -21,11 +21,12 @@ jobs:
           echo "Commit count: $commit_count"
           if [ "$commit_count" -eq 1 ]; then
             echo "is_first_commit=true" >> $GITHUB_ENV
-            echo "::set-output name=is_first_commit::true"
           else
             echo "is_first_commit=false" >> $GITHUB_ENV
-            echo "::set-output name=is_first_commit::false"
           fi
+        # Set the output based on the environment variable for use in the next job
+        outputs:
+          is_first_commit: ${{ env.is_first_commit }}
 
   setup_repository:
     runs-on: ubuntu-latest
