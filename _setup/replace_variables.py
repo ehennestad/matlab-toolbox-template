@@ -60,7 +60,7 @@ if __name__ == "__main__":
         'author_email': config['matlab_toolbox']['author_email'],
         'author_company': config['matlab_toolbox']['author_company'],
         'toolbox_summary': config['matlab_toolbox']['toolbox_summary'],
-        'toolbox_description': config['matlab_toolbox']['toolbox_description']
+        'toolbox_description': config['matlab_toolbox']['toolbox_description'].replace('\n', ' ').strip()
     }
     
     # Set the root directory for your project (assuming current directory)

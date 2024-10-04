@@ -53,6 +53,15 @@ jobs:
             echo "_setup folder not found, skipping deletion."
           fi
 
+      - name: Delete config.yaml
+        run: |
+          if [ -f "config.yaml" ]; then
+            rm config.yaml
+            echo "config.yaml deleted."
+          else
+            echo "config.yaml not found, skipping deletion."
+          fi
+
       - name: Commit changes
         run: |
           git config --global user.name "github-actions[bot]"
@@ -60,6 +69,3 @@ jobs:
           git add .
           git commit -m "Setup repository based on configuration"
           git push
-
-# Todo:
-# Clean up
