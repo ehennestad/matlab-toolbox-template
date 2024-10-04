@@ -17,13 +17,14 @@ jobs:
         run: |
           # Extract repository name from GitHub variables
           REPO_NAME=${GITHUB_REPOSITORY_NAME}
+          echo "REPO_NAME=$REPO_NAME" >> $GITHUB_ENV
 
       - name: Parse configuration file
         run: |
-          # Example using yq to extract values from YAML
-
-          export LICENSE=$(yq e '.repository.license' config.yaml)
-          echo "Setting up $REPO_NAME with $LICENSE license"
+          # Using yq to extract values from YAML
+          LICENSE=$(yq e '.repository.license' config.yaml)
+          echo "LICENSE=$LICENSE" >> $GITHUB_ENV
+          echo "Setting up ${{ env.REPO_NAME }} with $LICENSE license"
 
       - name: Set up license
         run: |
