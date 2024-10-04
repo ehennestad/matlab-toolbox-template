@@ -7,6 +7,7 @@ on:
     paths-ignore:
     paths-ignore:
       - 'setup.yml'
+      - 'config.yaml'
       - 'README.md'
       - 'tools/README.md'
       - '.github/workflows/**'
