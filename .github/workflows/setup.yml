@@ -20,13 +20,10 @@ jobs:
           commit_count=$(git rev-list --count HEAD)
           echo "Commit count: $commit_count"
           if [ "$commit_count" -eq 1 ]; then
-            echo "is_first_commit=true" >> $GITHUB_ENV
+            echo "is_first_commit=true" >> $GITHUB_OUTPUT
           else
-            echo "is_first_commit=false" >> $GITHUB_ENV
+            echo "is_first_commit=false" >> $GITHUB_OUTPUT
           fi
-        # Set the output based on the environment variable for use in the next job
-        outputs:
-          is_first_commit: ${{ env.is_first_commit }}
 
   setup_repository:
     runs-on: ubuntu-latest
