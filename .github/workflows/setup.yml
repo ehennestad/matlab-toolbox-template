@@ -6,29 +6,11 @@ on:
       - 'config.yaml'  # or any other config file path
 
 jobs:
-  check_first_commit:
-    runs-on: ubuntu-latest
-    outputs:
-      is_first_commit: ${{ steps.check.outputs.is_first_commit }}
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Check if this is the first commit
-        id: check
-        run: |
-          commit_count=$(git rev-list --count HEAD)
-          echo "Commit count: $commit_count"
-          if [ "$commit_count" -eq 1 ]; then
-            echo "is_first_commit=true" >> $GITHUB_OUTPUT
-          else
-            echo "is_first_commit=false" >> $GITHUB_OUTPUT
-          fi
 
   setup_repository:
     runs-on: ubuntu-latest
-    needs: check_first_commit
-    if: needs.check_first_commit.outputs.is_first_commit == 'false'
+    # Skip first run which is triggered on the creation from template
+    if: github.run_number > 1
 
     steps:
       - name: Checkout code
