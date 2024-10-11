@@ -9,6 +9,10 @@ Template project for developing a MATLAB toolbox with git. This project includes
 
 To use this template, press the green "Use this template..." button in the upper right corner of this page and the follow the [post-setup instructions](#post-setup-instructions) below.
 
+## Requirements
+It is recommended to use **MATLAB R2023a** or later. Toolbox packaging will only work with R2023 or later, other functionality of the toolbox should work with older releases as well. 
+
+
 ## Post-Setup Instructions
 
 ### Step 1
