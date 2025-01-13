@@ -34,16 +34,9 @@ jobs:
       - name: Run tests
         uses: matlab-actions/run-command@v2
         with:
-          command: addpath(genpath("tools")), testToolbox('ReportSubdirectory',"${{ matrix.MATLABVersion }}")     
-
-      # Upload code coverage information to Codecov
-      - name: Upload code coverage report to Codecov
-        uses: codecov/codecov-action@v4
-        if: always()
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          files: docs/reports/codecoverage.xml
-          env_vars: ${{ matrix.MATLABVersion }}
+          command: | 
+            addpath(genpath("tools"));
+            testToolbox('ReportSubdirectory',"${{ matrix.MATLABVersion }}", 'CreateBadge', false)     
 
       # Save the contents of the report directory from each release into an artifact.
       - name: Save Report Directory
@@ -55,17 +48,22 @@ jobs:
           
   # Report on what releases tested successfully.
   # Generate a draft release based on the tag
-  # Recreate the tag with the final version of JSON files
+  # Recreate the tag with the final version of files
   release:
     needs: test
     if: always()
     runs-on: ubuntu-latest
+    env:
+      TOOLBOX_FILE_NAME: MATLAB_TOOLBOX
     
     steps:
-      - uses: actions/checkout@v4
-        with:
-            ref: refs/heads/main
-    
+      # Use deploy key to push back to protected branch
+      - name: Checkout repository using deploy key
+        uses: actions/checkout@v4
+        #with:
+        #    ref: refs/heads/main
+        #    ssh-key: ${{ secrets.DEPLOY_KEY }}
+
       - name: Set up MATLAB
         uses: matlab-actions/setup-matlab@v2
 
@@ -80,7 +78,9 @@ jobs:
       - name: Generate tested with badge
         uses: matlab-actions/run-command@v2
         with:
-          command: addpath(genpath("tools")), createTestedWithBadgeforToolbox("${{  github.ref_name }}")     
+          command: | 
+            addpath(genpath("tools"));
+            createTestedWithBadgeForToolbox("${{  github.ref_name }}")     
           
       # Publish test results from all the releases
       - name: Publish Test Results
@@ -93,7 +93,9 @@ jobs:
       - name: Package Toolbox
         uses: matlab-actions/run-command@v2
         with:
-          command: addpath(genpath("tools")), packageToolbox("specific","${{  github.ref_name }}")     
+          command: |
+            addpath(genpath("tools"));
+            packageToolbox("specific","${{  github.ref_name }}")     
 
       # Define the versionNumber using underscores, as this is used in the MLTBX
       - name: Set version number
@@ -102,45 +104,74 @@ jobs:
           versionNumber=$(echo "${{ github.ref_name }}" | sed 's/\./_/g')
           echo "versionNumber=$versionNumber" >> $GITHUB_ENV
 
-
       # Save the MLTBX.
-      - name: Save Packaged Toolbox
+      - name: Save packaged toolbox
         uses: actions/upload-artifact@v4
         with:
-          name: MatBox${{ env.versionNumber }}.mltbx
-          path: releases/MatBox_${{ env.versionNumber }}.mltbx
+          name: ${{env.TOOLBOX_FILE_NAME}}${{ env.versionNumber }}.mltbx
+          path: releases/${{env.TOOLBOX_FILE_NAME}}_${{ env.versionNumber }}.mltbx
 
-      # Commit the JSON for the MATLAB releases badge and ToolboxPackaging.prj
-      - name: commit changed files
+      # Commit the updated Contents.m
+      - name: Commit updated Contents.m file
         continue-on-error: true
         run: |
           git config user.name "${{ github.workflow }} by ${{ github.actor }}"
           git config user.email "<>"
           git status
           git add code/Contents.m
-          git add .github/badges/${{  github.ref_name }}/tested_with.json
           git commit -m "Final checkins for release ${{  github.ref_name }}"
           git fetch
           git push
 
+      # Commit the JSON for the MATLAB releases test badge to gh-badges branch
+      - name: Checkout gh-badges branch
+        uses: actions/checkout@v4
+        with:
+          ref: gh-badges
+          path: gh-badges
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Push to gh-badges
+        run: |
+          mkdir -p gh-badges/.github/badges/${{  github.ref_name }}
+          cp .github/badges/${{  github.ref_name }}/tested_with.json gh-badges/.github/badges/${{  github.ref_name }}/tested_with.json
+          cd gh-badges
+                    
+          git config user.name "${{ github.workflow }} by ${{ github.actor }}"
+          git config user.email "<>"
+
+          # Only proceed with commit and push if changes are detected
+          if [[ $(git add .github/badges/* --dry-run | wc -l) -gt 0 ]]; then
+            git add .github/badges/*
+            git commit -m "Update tested with badge for release"
+            git push -f
+          else
+            echo "Nothing to commit"
+          fi
+
       # Retag the repo so that the updated files are included in the release tag
-      - name: update tag
+      - name: Update tag
         if: always()
         continue-on-error: true
         run: |
           git config user.name "${{ github.workflow }} by ${{ github.actor }}"
           git config user.email "<>"
-          git tag -d "${{  github.ref_name }}" 
-          git push --delete origin ${{  github.ref_name }}
-          git tag -m "Release ${{  github.ref_name }}" ${{  github.ref_name }}
-          git push --tag
+
+          # Delete the existing tag locally and remotely
+          git tag -d "${{ github.ref_name }}" 
+          git push origin --delete "${{ github.ref_name }}"
+        
+          # Recreate the tag with a message, including [skip ci] to prevent CI workflows
+          git tag -a "${{ github.ref_name }}" -m "Release ${{ github.ref_name }} [skip ci]" 
+        
+          # Push the new tag to the remote repository
+          git push origin "${{ github.ref_name }}"
 
       # Create the release
       - name: Create GitHub Release
         uses: ncipollo/release-action@v1
         with:
           draft: true        
-          artifacts: "releases/MatBox_${{ env.versionNumber }}.mltbx"
+          artifacts: "releases/${{env.TOOLBOX_FILE_NAME}}_${{ env.versionNumber }}.mltbx"
           generateReleaseNotes: true
-          body: "![MATLAB Versions Tested](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fehennestad%2Fmatbox%2Fmain%2F.github%2Fbadges%2F${{  github.ref_name }}%2Ftested_with.json)"
-
+          body: "![MATLAB Versions Tested](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2F${{github.repository}}%2Fgh-badges%2F.github%2Fbadges%2F${{ github.ref_name }}%2Ftested_with.json)"
