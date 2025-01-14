@@ -48,7 +48,7 @@ jobs:
           command: addpath(genpath("tools")), testToolbox()
 
       # Commit the JSON for the badge for the issues and tests
-      - name: commit code issues badge JSON
+      - name: Commit code issues badge
         if: always()
         continue-on-error: true
         run: |
