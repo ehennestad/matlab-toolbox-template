@@ -7,9 +7,8 @@ on:
     paths-ignore:
       - 'setup.yml'
       - 'config.yaml'
-      - 'README.md'
-      - 'tools/README.md'
-      - '.github/workflows/**'
+      - '*md'
+      - '.github/**'
       - 'docs/reports/**'
   pull_request:
     branches: [ "main" ]
@@ -31,7 +30,9 @@ jobs:
     steps:
       # Checks-out the repository under $GITHUB_WORKSPACE, so the job can access it
       - name: Check out repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'pull_request' && github.head_ref || github.ref_name }}
       
       - name: Set up MATLAB
         uses: matlab-actions/setup-matlab@v2
@@ -41,7 +42,14 @@ jobs:
         uses: matlab-actions/run-command@v2
         if: always()
         with:
-          command: addpath(genpath("tools")), codecheckToolbox()     
+          command: addpath(genpath("tools")), codecheckToolbox()
+      
+      # Upload code issues report
+      - name: Upload SARIF file
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          # Path to SARIF file relative to the root of the repository
+          sarif_file: docs/reports/code_issues.sarif
           
       # Runs all tests in the project.
       - name: Run tests
@@ -75,14 +83,14 @@ jobs:
           files: docs/reports/codecoverage.xml
           
       # Publish test results
-      - name: Publish Test Results
+      - name: Publish test results
         uses: EnricoMi/publish-unit-test-result-action@v2
         if: always()
         with:
           files: "docs/reports/test-results.xml"
           
       # Save the contents of the reports directory as an artifact
-      - name: Save Reports Directory
+      - name: Save reports directory
         uses: actions/upload-artifact@v4
         if: always()
         with:
