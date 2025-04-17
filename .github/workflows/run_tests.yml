@@ -7,7 +7,7 @@ on:
     paths-ignore:
       - 'setup.yml'
       - 'config.yaml'
-      - '*md'
+      - '*.md'
       - '.github/**'
       - 'docs/reports/**'
   pull_request:
@@ -20,15 +20,16 @@ on:
   workflow_dispatch:
 
 jobs:
-  # This workflow contains a single job called "test"
-  test:
-    name: Test toolbox code
-    # The type of runner that the job will run on
+  check_test_coverage:
+    name: Test ${{ env.MATLAB_TOOLBOX_NAME }}
     runs-on: ubuntu-latest
+    env:
+      TOOLBOX_NAME: <<MATLAB_TOOLBOX_NAME>>
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
+    # Steps representing a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out the repository under $GITHUB_WORKSPACE, so the job can access it
+      # Check out repository under $GITHUB_WORKSPACE, using a shallow clone. 
+      # Repository is available for all steps of the job.
       - name: Check out repo
         uses: actions/checkout@v4
         with:

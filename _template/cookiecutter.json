@@ -1,0 +1,19 @@
+{
+  "repo_name": "matlab-toolbox",
+  "toolbox_name": "My MATLAB Toolbox",
+  "namespace_name": "mytoolbox",
+  "author_name": "Your Name",
+  "author_email": "your.email@example.com",
+  "author_company": "Your Company",
+  "toolbox_summary": "A brief description of what your toolbox does",
+  "toolbox_description": "A more detailed description of your MATLAB toolbox.",
+  "license": "MIT",
+  "github_username": "yourusername",
+  "github_repo": "{{ cookiecutter.repo_name }}",
+  "matlab_version_min": "R2019b",
+  "dependencies": ["MATLAB", "Statistics and Machine Learning Toolbox"],
+  "_copy_without_render": [
+    "*.m",
+    "*.json"
+  ]
+}
