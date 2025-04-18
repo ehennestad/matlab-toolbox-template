@@ -1,6 +1,7 @@
 import yaml
 import os
 import uuid
+import sys
 from jinja2 import Template
 
 # Load configuration from config.yaml
@@ -27,6 +28,33 @@ def replace_variables_in_name(name, variables):
     template = Template(name)
     return template.render(variables)
 
+# Create README.md from template
+def create_readme_from_template(template_path, output_path, variables):
+    """
+    Create a README.md file from the template using the provided variables.
+    
+    Args:
+        template_path (str): Path to the README.md.template file
+        output_path (str): Path where the generated README.md should be saved
+        variables (dict): Dictionary containing variables to replace in the template
+    """
+    if not os.path.exists(template_path):
+        print(f"Warning: README template file not found at {template_path}")
+        return
+        
+    with open(template_path, 'r') as file:
+        template_content = file.read()
+    
+    # Use Jinja2 template rendering to replace placeholders
+    template = Template(template_content)
+    rendered_content = template.render(variables)
+    
+    # Write the rendered content to the output file
+    with open(output_path, 'w') as file:
+        file.write(rendered_content)
+    
+    print(f"Created README.md at {output_path}")
+
 # Recursively find and replace placeholders in .m and .json files and their names
 def replace_in_files_and_folders(root_dir, variables):
     for dirpath, dirnames, filenames in os.walk(root_dir, topdown=False):
@@ -51,6 +79,10 @@ if __name__ == "__main__":
     config_file = 'config.yaml'
     config = load_config(config_file)
     
+    # Get repository information from GitHub environment variables
+    github_repository = os.environ.get('GITHUB_REPOSITORY', 'OWNER/REPO')
+    repo_owner, repo_name = github_repository.split('/') if '/' in github_repository else ('OWNER', 'REPO')
+    
     # Define the placeholders and corresponding values from the config
     variables = {
         'namespace_name': config['matlab_toolbox']['namespace_name'],
@@ -60,7 +92,13 @@ if __name__ == "__main__":
         'author_email': config['matlab_toolbox']['author_email'],
         'author_company': config['matlab_toolbox']['author_company'],
         'toolbox_summary': config['matlab_toolbox']['toolbox_summary'],
-        'toolbox_description': config['matlab_toolbox']['toolbox_description'].replace('\n', ' ').strip()
+        'toolbox_description': config['matlab_toolbox']['toolbox_description'].replace('\n', ' ').strip(),
+        # Repository information
+        'repo_owner': repo_owner,
+        'repo_name': repo_name,
+        # Placeholders for values to be filled in later
+        'fex_url': 'https://www.mathworks.com/matlabcentral/fileexchange/YOUR_FEX_ID',
+        'codecov_token': 'YOUR_CODECOV_TOKEN'
     }
     
     # Set the root directory for your project (assuming current directory)
@@ -68,3 +106,6 @@ if __name__ == "__main__":
 
     # Replace variables in all .m and .json files in the project
     replace_in_files_and_folders(root_dir, variables)
+    
+    # Create README.md from template
+    create_readme_from_template('README.md.template', 'README.md', variables)
