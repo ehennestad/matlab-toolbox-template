@@ -109,3 +109,16 @@ if __name__ == "__main__":
     
     # Create README.md from template
     create_readme_from_template('README.md.template', 'README.md', variables)
+    
+    # Delete setup.yml workflow and README.md.template after they've been used
+    files_to_delete = [
+        '.github/workflows/setup.yml',
+        'README.md.template'
+    ]
+    
+    for file_path in files_to_delete:
+        if os.path.exists(file_path):
+            os.remove(file_path)
+            print(f"Deleted {file_path}")
+        else:
+            print(f"Warning: {file_path} not found, skipping deletion.")
