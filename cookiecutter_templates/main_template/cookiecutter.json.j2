@@ -1,0 +1,24 @@
+{
+  "repo_name": "{{ env.GITHUB_REPOSITORY.split('/')[-1] }}",
+  "repo_owner": "{{ env.GITHUB_REPOSITORY.split('/')[0] }}",
+  "toolbox_name": "{{ config.matlab_toolbox.toolbox_name }}",
+  "toolbox_identifier": "{{ env.TOOLBOX_UUID }}",
+  "namespace_name": "{{ config.matlab_toolbox.namespace_name }}",
+  "author_name": "{{ config.matlab_toolbox.author_name }}",
+  "author_email": "{{ config.matlab_toolbox.author_email }}",
+  "author_company": "{{ config.matlab_toolbox.author_company }}",
+  "toolbox_summary": "{{ config.matlab_toolbox.toolbox_summary }}",
+  "toolbox_description": "{{ config.matlab_toolbox.toolbox_description | replace('\n', ' ') | replace('\r', ' ') | replace('  ', ' ') | trim }}",
+  "license": "{{ config.repository.license}}",
+  "copyright_holder": "{{ config.matlab_toolbox.author_name }}",
+  "matlab_version_min": "R2019b",
+  "dependencies": "{{ config.matlab_toolbox.dependencies | default(['MATLAB']) | join(',') }}",
+  "products": "{{ config.matlab_toolbox.dependencies | default(['MATLAB']) | join(',') }}",
+  "fex_url": "{{ config.fileexchange.fex_url | default('', true) }}",
+  "codecov_badge_token": "{{ config.codecov.badge_token | default('', true) }}",
+  "initial_version": "1.0.0",
+  "_copy_without_render": [
+    "*.yml",
+    "*.yaml"
+  ]
+}

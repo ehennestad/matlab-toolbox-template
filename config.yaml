@@ -19,7 +19,7 @@ repository:
 # MATLAB Toolbox Settings
 matlab_toolbox:
   namespace_name: mytoolbox                         # A unique namespace for your toolbox
-  toolbox_name: MyToolbox                           # Name of the MATLAB toolbox                  
+  toolbox_name: My Toolbox                          # Name of the MATLAB toolbox                  
   author_name: John Doe                     
   author_email: johndoe@example.com         
   author_company: John Doe Inc.                     # Author's company or organization
@@ -28,3 +28,13 @@ matlab_toolbox:
     A detailed description of your MATLAB toolbox.
     This can span multiple lines to provide users with enough information
     on what your toolbox offers and how it can be used.
+  dependencies:                                     # Required MATLAB products
+    - MATLAB
+    - Statistics and Machine Learning Toolbox
+
+# Publishing options
+codecov:
+  badge_token: null
+
+fileexchange:
+  fex_url: null
