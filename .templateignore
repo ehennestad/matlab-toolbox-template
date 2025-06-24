@@ -1,6 +1,0 @@
-# Template-specific files and directories to be removed after configuration
-_setup/
-_template/
-.templateignore
-.github/scripts/configure_repo.py
-.github/workflows/configure-template.yml

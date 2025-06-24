@@ -1,0 +1,14 @@
+{
+    "Namespace" : "{{cookiecutter.namespace_name}}",
+    "ToolboxOptions": {
+        "Identifier": "{{cookiecutter.toolbox_identifier}}",
+        "ToolboxName": "{{cookiecutter.toolbox_name}}",
+        "AuthorName": "{{cookiecutter.author_name}}",
+        "AuthorEmail": "{{cookiecutter.author_email}}",
+        "AuthorCompany": "{{cookiecutter.author_company}}",
+        "Summary": "{{cookiecutter.toolbox_summary}}",
+        "Description": "{{cookiecutter.toolbox_description}}",
+        "MinimumMatlabRelease": "{{ cookiecutter.matlab_version_min }}",
+        "MaximumMatlabRelease": ""
+    }
+}
