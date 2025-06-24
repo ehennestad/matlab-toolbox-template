@@ -49,7 +49,7 @@ jobs:
     - name: Extract config and validate branch templates
       run: |
         echo "PROJECT_NAME=${GITHUB_REPOSITORY##*/}" >> $GITHUB_ENV
-        echo "SELECTED_LICENSE=$(yq '.repository.license // "MIT"' config.yaml)" >> $GITHUB_ENV
+        echo "SELECTED_LICENSE=$(yq '.repository.license' config.yaml)" >> $GITHUB_ENV
 
         for branch in main gh-badges; do
           if [ ! -d "cookiecutter_templates/${branch}_template" ]; then
@@ -57,6 +57,16 @@ jobs:
             exit 1
           fi
         done
+
+    - name: Copy license to main template
+      run: |
+        if [ -n "${SELECTED_LICENSE}" ] && [ -f "resources/licenses/${SELECTED_LICENSE}.txt" ]; then
+          cp "resources/licenses/${SELECTED_LICENSE}.txt" "cookiecutter_templates/main_template/{{cookiecutter.repo_name}}/LICENSE"
+        elif [ -n "${SELECTED_LICENSE}" ]; then
+          echo "Warning: License '${SELECTED_LICENSE}' not found"
+        else
+          echo "No license specified in config.yaml"
+        fi
 
     - name: Generate branch templates
       run: |
@@ -74,13 +84,6 @@ jobs:
 
         cp -r /tmp/generated_main/$PROJECT_NAME/* .
         cp -r /tmp/generated_main/$PROJECT_NAME/.[^.]* . 2>/dev/null || true
-
-        git checkout template-archive -- resources/
-        if [ -f "resources/licenses/${SELECTED_LICENSE}.txt" ]; then
-          cp "resources/licenses/${SELECTED_LICENSE}.txt" LICENSE
-        else
-          echo "Warning: License '${SELECTED_LICENSE}' not found"
-        fi
 
         rm -rf resources/
         rm -f .github/workflows/initialize.yml

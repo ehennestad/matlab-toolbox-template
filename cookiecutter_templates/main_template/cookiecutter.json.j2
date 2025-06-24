@@ -10,6 +10,7 @@
   "toolbox_summary": "{{ config.matlab_toolbox.toolbox_summary }}",
   "toolbox_description": "{{ config.matlab_toolbox.toolbox_description | replace('\n', ' ') | replace('\r', ' ') | replace('  ', ' ') | trim }}",
   "license": "{{ config.repository.license}}",
+  "copyright_holder": "{{ config.matlab_toolbox.author_name }}",
   "matlab_version_min": "R2019b",
   "dependencies": "{{ config.matlab_toolbox.dependencies | default(['MATLAB']) | join(',') }}",
   "products": "{{ config.matlab_toolbox.dependencies | default(['MATLAB']) | join(',') }}",
