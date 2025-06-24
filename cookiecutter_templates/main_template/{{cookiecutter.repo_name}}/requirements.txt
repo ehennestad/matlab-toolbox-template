@@ -1,0 +1,11 @@
+# This file is used to specify the dependencies for the project.
+# You can install these dependencies using MatBox:
+#   matbox.installRequirements(toolboxRootFolder)
+#
+# Example of a dependency from the File Exchange:
+#   fex://12345-my-awesome-toolbox/1.0.0 - with fixed version number
+#   fex://67890-another-toolbox - will install the latest version
+#
+# Example of a dependency from GitHub:
+#   https://github.com/some-owner/some-repo@some-branch - pinned to branch
+#   https://github.com/some-owner/some-repo - uses default branch

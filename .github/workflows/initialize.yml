@@ -1,0 +1,135 @@
+name: Initialize Repository from Templates
+
+on:
+  push:
+    paths:
+      - 'config.yaml'
+  workflow_dispatch:
+
+jobs:
+  check_write_permissions:
+    name: Check Write Permissions
+    if: github.run_number > 1
+    uses: ./.github/workflows/reusable-check-push-permission.yml
+
+  initialize:
+    needs: check_write_permissions
+    runs-on: ubuntu-latest
+    # Skip initialization if running in the template repository itself
+    if: ${{ !endsWith(github.repository, '/matlab-toolbox-template') }}
+    permissions:
+      contents: write
+      actions: write
+
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+
+    - name: Install Python dependencies
+      run: pip install -U pip cookiecutter pyyaml jinja2
+
+    - name: Configure Git
+      run: |
+        git config --local user.email "github-actions[bot]@users.noreply.github.com"
+        git config --local user.name "github-actions[bot]"
+
+    - name: Archive current repository state
+      run: |
+        git checkout -B template-archive
+        git push origin template-archive --force
+        git checkout main
+
+    - name: Generate toolbox UUID
+      id: uuid
+      run: echo "TOOLBOX_UUID=$(node -e 'console.log(crypto.randomUUID())')" >> $GITHUB_ENV
+
+    - name: Extract config and validate branch templates
+      run: |
+        echo "PROJECT_NAME=${GITHUB_REPOSITORY##*/}" >> $GITHUB_ENV
+        echo "SELECTED_LICENSE=$(yq '.repository.license' config.yaml)" >> $GITHUB_ENV
+
+        for branch in main gh-badges; do
+          if [ ! -d "cookiecutter_templates/${branch}_template" ]; then
+            echo "Missing template: ${branch}_template"
+            exit 1
+          fi
+        done
+
+    - name: Copy license to main template
+      run: |
+        if [ -n "${SELECTED_LICENSE}" ] && [ -f "resources/licenses/${SELECTED_LICENSE}.txt" ]; then
+          cp "resources/licenses/${SELECTED_LICENSE}.txt" "cookiecutter_templates/main_template/{{cookiecutter.repo_name}}/LICENSE"
+        elif [ -n "${SELECTED_LICENSE}" ]; then
+          echo "Warning: License '${SELECTED_LICENSE}' not found"
+        else
+          echo "No license specified in config.yaml"
+        fi
+
+    - name: Generate branch templates
+      run: |
+        for branch in main gh-badges; do
+          template="${branch}_template"
+          output_dir="/tmp/generated_${branch}"
+
+          python3 .github/scripts/render_cookiecutter_template.py "$template"
+          cookiecutter "/tmp/temp_${template}" --no-input --output-dir "$output_dir"
+        done
+
+    - name: Populate main branch
+      run: |
+        find . -mindepth 1 -maxdepth 1 ! -name '.git' ! -name '.github' -exec rm -rf {} +
+
+        cp -r /tmp/generated_main/$PROJECT_NAME/* .
+        cp -r /tmp/generated_main/$PROJECT_NAME/.[^.]* . 2>/dev/null || true
+
+        rm -rf resources/
+        rm -f .github/workflows/initialize.yml
+        rm -f .github/workflows/reusable-check-push-permission.yml
+        rm -rf .github/scripts
+
+    - name: Commit and push main branch
+      run: |
+        git add .
+        if ! git diff --staged --quiet; then
+          git commit -m "Initialize main branch from main_template"
+          git push origin main
+        else
+          echo "No changes to commit on main branch"
+        fi
+
+    - name: Create and populate gh-badges branch
+      run: |
+        if git show-ref --quiet refs/heads/gh-badges; then
+          git checkout gh-badges
+        else
+          git checkout --orphan gh-badges
+          git rm -rf . 2>/dev/null || true
+        fi
+
+        cp -r /tmp/generated_gh-badges/$PROJECT_NAME/* .
+        cp -r /tmp/generated_gh-badges/$PROJECT_NAME/.[^.]* . 2>/dev/null || true
+
+    - name: Commit and push gh-badges branch
+      run: |
+        git add .
+        if ! git diff --staged --quiet; then
+          git commit -m "Initialize gh-badges branch from gh-badges_template"
+          git push origin gh-badges
+        else
+          echo "No changes to commit on gh-badges branch"
+        fi
+
+    - name: Return to main branch
+      run: git checkout main
+
+    - name: Summary
+      run: |
+        echo "🎉 Repository initialization complete!"
+        echo "- main: Generated from main_template"
+        echo "- gh-badges: Generated from gh-badges_template"
+        echo "- template-archive: Backup of original state"

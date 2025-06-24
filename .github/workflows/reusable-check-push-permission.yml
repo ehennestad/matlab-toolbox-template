@@ -1,0 +1,38 @@
+name: Check Push Permission
+
+on:
+  workflow_call:
+
+jobs:
+  check-push-permission:
+    name: Check push permission
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Git user
+        run: |
+          git config --global user.email "actions@github.com"
+          git config --global user.name "GitHub Actions"
+
+      - name: Make empty commit to test push
+        run: |
+          git commit --allow-empty -m "Test push permission"
+
+      - name: Test push permission (dry-run)
+        id: test_push
+        run: |
+          set +e
+          git push --dry-run origin HEAD
+          exit_code=$?
+          set -e
+
+          if [ "$exit_code" -ne 0 ]; then
+            echo "::error::GitHub Actions does not have permission to push to this repository."
+            echo "::error::Please go to Settings → Actions → General → Workflow permissions, and enable 'Read and write permissions'."
+            exit 1
+          else
+            echo "Push permission detected."
+          fi
