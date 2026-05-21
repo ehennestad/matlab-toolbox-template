@@ -2,7 +2,7 @@ function installMatBox(mode)
 % installMatBox - Bootstrap MatBox using the matbox-actions installer.
 
     arguments
-        mode (1,1) string {mustBeMember(mode, ["release", "commit"])} = "commit"
+        mode (1,1) string {mustBeMember(mode, ["release", "commit"])} = "release"
     end
 
     if exist("+matbox/installRequirements", "file") == 2
