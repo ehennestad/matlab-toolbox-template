@@ -1,5 +1,6 @@
 {
     "Namespace" : "{{cookiecutter.namespace_name}}",
+    "RootFilesToPackage": ["LICENSE"],
     "ToolboxOptions": {
         "Identifier": "{{cookiecutter.toolbox_identifier}}",
         "ToolboxName": "{{cookiecutter.toolbox_name}}",
