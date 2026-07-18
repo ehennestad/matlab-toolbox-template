@@ -9,7 +9,10 @@ function installMatBox(mode)
         return
     end
 
-    sourceFile = "https://raw.githubusercontent.com/ehennestad/matbox-actions/refs/heads/main/install-matbox/installMatBox.m";
+    % Fetch the installer from the v1 release tag, not main: v1 only moves
+    % when matbox-actions publishes a release, so local installs get gated,
+    % release-quality updates instead of whatever is currently on main.
+    sourceFile = "https://raw.githubusercontent.com/ehennestad/matbox-actions/refs/tags/v1/install-matbox/installMatBox.m";
 
     tempFolder = tempname;
     mkdir(tempFolder)
