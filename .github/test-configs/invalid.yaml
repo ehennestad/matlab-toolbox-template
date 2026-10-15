@@ -1,0 +1,13 @@
+# Config with problems that validate_config.py must report
+repository:
+  license: None
+
+matlab_toolbox:
+  namespace_name: my-toolbox
+  toolbox_name: A "Quoted" & Toolbox
+  author_name: John Doe
+  author_email: johndoe@example.com
+  author_company: John Doe Inc.
+  toolbox_summary: ''
+  toolbox_description: A description
+  dependencies: MATLAB
