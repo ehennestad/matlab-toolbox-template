@@ -1,4 +1,4 @@
 % {{ cookiecutter.toolbox_name }}
-% Version {{ cookiecutter.initial_version }} ({{ "{{ date }}" }})
+% Version {{ cookiecutter.initial_version }} {% now 'utc', '%d-%b-%Y' %}
 %
-% Copyright {{ "{{ year }}" }} {{ cookiecutter.author_name }}
+% Copyright {% now 'utc', '%Y' %} {{ cookiecutter.author_name }}
