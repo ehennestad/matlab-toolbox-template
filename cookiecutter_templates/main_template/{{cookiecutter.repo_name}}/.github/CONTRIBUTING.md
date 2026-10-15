@@ -13,7 +13,7 @@ Even if you're not ready to submit a solution, opening an issue is valuable.
 ## How to contribute
 
 ### 1. Check for existing issues  
-Before starting work, [check the existing issues](https://github.com/your-repo/issues) to see if your idea or bug has already been reported. You can join the conversation there or add new information.
+Before starting work, [check the existing issues](https://github.com/{{ cookiecutter.repo_owner }}/{{ cookiecutter.repo_name }}/issues) to see if your idea or bug has already been reported. You can join the conversation there or add new information.
 
 ### 2. Open a new issue  
 If no one has reported it yet, [create a new issue](https://docs.github.com/en/issues/tracking-your-work-with-issues/creating-an-issue). Be as clear and complete as possible—others may not share your context, so include:
@@ -37,8 +37,9 @@ Submit a [pull request](https://docs.github.com/en/pull-requests/collaborating-w
 
 ## Guidelines
 
-There are currently no formal best practices for writing MATLAB&reg; code in this project, but we recommend:
+When writing MATLAB&reg; code for this project:
 
+- Follow the [MATLAB Coding Guidelines](https://github.com/mathworks/MATLAB-Coding-Guidelines)
 - Avoid warnings or errors in the [Code Analyzer report](https://www.mathworks.com/help/matlab/matlab_prog/matlab-code-analyzer-report.html)
 - Follow [Loren Shure’s MATLAB Best Practices](https://blogs.mathworks.com/loren/category/best-practice/)
 - Provide examples as [Live Scripts](https://www.mathworks.com/help/matlab/matlab_prog/what-is-a-live-script-or-function.html), and [export them as HTML](https://www.mathworks.com/help/matlab/matlab_prog/share-live-scripts.html) for documentation
