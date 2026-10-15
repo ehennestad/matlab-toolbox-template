@@ -64,43 +64,14 @@ def render_cookiecutter_template(template_name):
     return temp_dir
 
 
-def get_config_values():
-    """
-    Get commonly needed config values for the workflow
-    
-    Returns:
-        dict: Dictionary with repo_name and license
-    """
-    # Read config.yaml
-    with open('config.yaml', 'r') as f:
-        config = yaml.safe_load(f)
-    
-    # Get repo name from environment
-    repo_name = os.environ.get('GITHUB_REPOSITORY', 'unknown-repo').split('/')[-1]
-    
-    # Get license from config
-    license_name = config.get('repository', {}).get('license', 'MIT')
-    
-    return {
-        'repo_name': repo_name,
-        'license': license_name
-    }
-
-
 def main():
     """Main function for command line usage"""
-    if len(sys.argv) < 2:
-        print("Usage: render_cookiecutter_template.py <template_name> [--get-config]")
+    if len(sys.argv) != 2:
+        print("Usage: render_cookiecutter_template.py <template_name>")
         sys.exit(1)
-    
-    if sys.argv[1] == '--get-config':
-        # Output config values as JSON for shell consumption
-        config_values = get_config_values()
-        print(json.dumps(config_values))
-    else:
-        template_name = sys.argv[1]
-        temp_dir = render_cookiecutter_template(template_name)
-        print(f"Template prepared at: {temp_dir}")
+
+    temp_dir = render_cookiecutter_template(sys.argv[1])
+    print(f"Template prepared at: {temp_dir}")
 
 
 if __name__ == '__main__':
