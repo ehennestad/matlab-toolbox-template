@@ -44,3 +44,8 @@ jobs:
       # matlab_products: >
       #   Image_Processing_Toolbox
       #   Statistics_and_Machine_Learning_Toolbox
+
+    secrets:
+      # Codecov upload token. Coverage is uploaded only when this repository
+      # secret is set
+      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
