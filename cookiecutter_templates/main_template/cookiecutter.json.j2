@@ -16,7 +16,7 @@
   "products": {{ config.matlab_toolbox.dependencies | default(['MATLAB']) | join(',') | tojson }},
   "fex_url": {{ config.fileexchange.fex_url | default('', true) | tojson }},
   "codecov_badge_token": {{ config.codecov.badge_token | default('', true) | tojson }},
-  "initial_version": "1.0.0",
+  "initial_version": "0.1.0",
   "_copy_without_render": [
     "*.yml",
     "*.yaml"
