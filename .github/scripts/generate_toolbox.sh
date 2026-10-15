@@ -3,10 +3,9 @@
 #
 # Usage: generate_toolbox.sh <output-dir>
 #
-# Writes the main branch content to <output-dir>/main and the gh-badges branch
-# content to <output-dir>/gh-badges. Run from the template repository root with
-# GITHUB_REPOSITORY and TOOLBOX_UUID set, and with cookiecutter, jinja2 and
-# pyyaml installed.
+# Writes the main branch content to <output-dir>/main. Run from the template
+# repository root with GITHUB_REPOSITORY and TOOLBOX_UUID set, and with
+# cookiecutter, jinja2 and pyyaml installed.
 
 set -euo pipefail
 
@@ -23,27 +22,23 @@ config = yaml.safe_load(open('config.yaml')) or {}
 print((config.get('repository') or {}).get('license') or '')
 ")
 
-for template in main_template gh-badges_template; do
-    # render_cookiecutter_template.py copies the template into this folder
-    # and merges into what is already there
-    rm -rf "/tmp/temp_${template}"
-    python3 .github/scripts/render_cookiecutter_template.py "$template"
+# render_cookiecutter_template.py copies the template into this folder and
+# merges into what is already there
+rm -rf /tmp/temp_main_template
+python3 .github/scripts/render_cookiecutter_template.py main_template
 
-    if [ "$template" = "main_template" ]; then
-        if [ -z "$license" ]; then
-            echo "No license specified in config.yaml"
-        elif [ -f "resources/licenses/${license}.txt" ]; then
-            cp "resources/licenses/${license}.txt" "/tmp/temp_${template}/{{cookiecutter.repo_name}}/LICENSE"
-        else
-            echo "Warning: License '${license}' not found"
-        fi
-    fi
+if [ -z "$license" ]; then
+    echo "No license specified in config.yaml"
+elif [ -f "resources/licenses/${license}.txt" ]; then
+    cp "resources/licenses/${license}.txt" "/tmp/temp_main_template/{{cookiecutter.repo_name}}/LICENSE"
+else
+    echo "Warning: License '${license}' not found"
+fi
 
-    cookiecutter "/tmp/temp_${template}" --no-input --output-dir "${render_dir}/${template}"
-done
+cookiecutter /tmp/temp_main_template --no-input --output-dir "${render_dir}"
 
 rm -rf "${output_dir}"
-mkdir -p "${output_dir}/main" "${output_dir}/gh-badges"
+mkdir -p "${output_dir}/main"
 
 # The workflows in .github apply to the generated toolbox, except those that
 # initialize or test the template itself
@@ -53,6 +48,4 @@ rm -f "${output_dir}/main/.github/workflows/reusable-check-push-permission.yml"
 rm -f "${output_dir}/main/.github/workflows/test-template.yml"
 rm -rf "${output_dir}/main/.github/scripts"
 rm -rf "${output_dir}/main/.github/test-configs"
-cp -r "${render_dir}/main_template/${project_name}/." "${output_dir}/main/"
-
-cp -r "${render_dir}/gh-badges_template/${project_name}/." "${output_dir}/gh-badges/"
+cp -r "${render_dir}/${project_name}/." "${output_dir}/main/"

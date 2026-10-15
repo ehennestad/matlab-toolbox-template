@@ -66,33 +66,8 @@ jobs:
           echo "No changes to commit on main branch"
         fi
 
-    - name: Create and populate gh-badges branch
-      run: |
-        if git show-ref --quiet refs/heads/gh-badges; then
-          git checkout gh-badges
-        else
-          git checkout --orphan gh-badges
-          git rm -rf . 2>/dev/null || true
-        fi
-
-        cp -r /tmp/generated/gh-badges/. .
-
-    - name: Commit and push gh-badges branch
-      run: |
-        git add .
-        if ! git diff --staged --quiet; then
-          git commit -m "Initialize gh-badges branch from gh-badges_template"
-          git push origin gh-badges
-        else
-          echo "No changes to commit on gh-badges branch"
-        fi
-
-    - name: Return to main branch
-      run: git checkout main
-
     - name: Summary
       run: |
         echo "🎉 Repository initialization complete!"
         echo "- main: Generated from main_template"
-        echo "- gh-badges: Generated from gh-badges_template"
         echo "- template-archive: Backup of original state"

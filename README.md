@@ -140,24 +140,16 @@ matbox.installRequirements(path/to/toolboxRootDir)
    - Checks write permissions to ensure the workflow can proceed
    - Archives the current repository state to the `template-archive` branch
    - Generates the main MATLAB toolbox project from `main_template` → pushes to `main` branch
-   - Generates the GitHub badges content from `gh-badges_template` → pushes to `gh-badges` branch
-   - Both templates use the same configuration from `config.yaml`
 
 ## Generated branches
 
 - **`main`**: Complete skeleton for a MATLAB toolbox project generated from your configuration
-- **`gh-badges`**: GitHub badges content for repository display
+- **`gh-badges`**: Created by the release workflow at the first release, to store "tested with" badges
 - **`template-archive`**: Backup of the original template repository
 
 ## Template Structure
 
-The system uses two predefined templates:
-
-### `main_template`
-Located in `cookiecutter_templates/main_template/`, this creates a full-featured MATLAB toolbox with comprehensive project structure, testing, documentation, and packaging capabilities.
-
-### `gh-badges_template`
-Located in `cookiecutter_templates/gh-badges_template/`, this creates a minimal structure optimized for displaying GitHub badges and basic repository information.
+The toolbox is generated from the cookiecutter template in `cookiecutter_templates/main_template/`.
 
 ## Workflow Details
 
@@ -169,7 +161,6 @@ The GitHub Actions workflow consists of two jobs:
 The workflow is designed to be safe and reliable:
 - Uses the existing `reusable-check-push-permission.yml` workflow for permission validation
 - Archives the current state before making any changes
-- Generates both templates from the same configuration
 - Handles branch creation and updates gracefully
 - Provides detailed logging and error handling
 
@@ -178,9 +169,8 @@ The workflow is designed to be safe and reliable:
 To modify the generated projects:
 
 1. Edit files in `cookiecutter_templates/main_template/` for the main toolbox structure
-2. Edit files in `cookiecutter_templates/gh-badges_template/` for the badges content
-3. Use `{{cookiecutter.variable_name}}` syntax to reference configuration values
-4. Test changes by updating `config.yaml` and triggering the workflow
+2. Use `{{cookiecutter.variable_name}}` syntax to reference configuration values
+3. Test changes by updating `config.yaml` and triggering the workflow
 
 ## Troubleshooting
 
