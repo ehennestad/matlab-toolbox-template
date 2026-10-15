@@ -50,6 +50,7 @@ rm -f "${output_dir}/main/.github/workflows/initialize.yml"
 rm -f "${output_dir}/main/.github/workflows/reusable-check-push-permission.yml"
 rm -f "${output_dir}/main/.github/workflows/test-template.yml"
 rm -rf "${output_dir}/main/.github/scripts"
+rm -rf "${output_dir}/main/.github/test-configs"
 cp -r "${render_dir}/main_template/${project_name}/." "${output_dir}/main/"
 
 cp -r "${render_dir}/gh-badges_template/${project_name}/." "${output_dir}/gh-badges/"

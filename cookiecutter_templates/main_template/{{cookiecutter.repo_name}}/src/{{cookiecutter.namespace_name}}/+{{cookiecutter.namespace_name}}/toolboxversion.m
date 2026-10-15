@@ -23,7 +23,8 @@ function versionStr = toolboxversion()
 
     if isempty(matchedStr)
         error('{{ cookiecutter.namespace_name | upper}}:Version:VersionNotFound', ...
-            'No version was detected for this {{ cookiecutter.toolbox_name }} installation.')
+            'No version was detected for this %s installation.', ...
+            '{{ cookiecutter.toolbox_name | replace("'", "''") }}')
     end
     versionStr = matchedStr{1};
 end

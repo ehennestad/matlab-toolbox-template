@@ -9,8 +9,8 @@ function gettingStarted()
     %   See also {{ cookiecutter.namespace_name }}.toolboxdir, {{ cookiecutter.namespace_name }}.toolboxversion
 
     % Display welcome message
-    fprintf('Welcome to {{ cookiecutter.toolbox_name }}!\n\n');
-    fprintf('{{ cookiecutter.toolbox_summary }}\n\n');
+    fprintf('Welcome to %s!\n\n', '{{ cookiecutter.toolbox_name | replace("'", "''") }}');
+    fprintf('%s\n\n', '{{ cookiecutter.toolbox_summary | replace("'", "''") }}');
     
     % Display version information
     fprintf('Version: %s\n', {{ cookiecutter.namespace_name }}.toolboxversion());

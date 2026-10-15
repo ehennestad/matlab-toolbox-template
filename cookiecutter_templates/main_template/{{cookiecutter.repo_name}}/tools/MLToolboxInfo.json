@@ -3,12 +3,12 @@
     "RootFilesToPackage": ["LICENSE"],
     "ToolboxOptions": {
         "Identifier": "{{cookiecutter.toolbox_identifier}}",
-        "ToolboxName": "{{cookiecutter.toolbox_name}}",
-        "AuthorName": "{{cookiecutter.author_name}}",
-        "AuthorEmail": "{{cookiecutter.author_email}}",
-        "AuthorCompany": "{{cookiecutter.author_company}}",
-        "Summary": "{{cookiecutter.toolbox_summary}}",
-        "Description": "{{cookiecutter.toolbox_description}}",
+        "ToolboxName": {{ cookiecutter.toolbox_name | tojson }},
+        "AuthorName": {{ cookiecutter.author_name | tojson }},
+        "AuthorEmail": {{ cookiecutter.author_email | tojson }},
+        "AuthorCompany": {{ cookiecutter.author_company | tojson }},
+        "Summary": {{ cookiecutter.toolbox_summary | tojson }},
+        "Description": {{ cookiecutter.toolbox_description | tojson }},
         "MinimumMatlabRelease": "{{ cookiecutter.matlab_version_min }}",
         "MaximumMatlabRelease": ""
     }

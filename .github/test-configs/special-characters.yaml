@@ -1,0 +1,22 @@
+# Config values with characters that need escaping in JSON and MATLAB code
+repository:
+  license: Apache-2.0
+
+matlab_toolbox:
+  namespace_name: quotetest
+  toolbox_name: O'Brien's (100%) Toolbox
+  author_name: Ann O'Brien
+  author_email: ann.obrien@example.com
+  author_company: Lab \ Group & Co.
+  toolbox_summary: Computes 100% of "everything" in O'Brien's way
+  toolbox_description: |
+    A description with "double quotes", 'single quotes', a backslash \
+    and a percent sign: 50%.
+  dependencies:
+    - MATLAB
+
+codecov:
+  badge_token: null
+
+fileexchange:
+  fex_url: null
