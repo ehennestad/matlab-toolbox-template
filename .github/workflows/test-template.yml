@@ -1,0 +1,75 @@
+name: Test template
+
+# Generates a toolbox from config.yaml the same way initialize.yml does, then
+# checks, tests and packages it. Initialization removes this workflow, so it
+# runs only in the template repository.
+
+on:
+  push:
+    branches: main
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test-template:
+    name: Generate and test a toolbox
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        path: template
+
+    - uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+
+    - name: Install Python dependencies
+      run: pip install -U pip cookiecutter pyyaml jinja2
+
+    - name: Generate toolbox
+      working-directory: template
+      env:
+        TOOLBOX_UUID: 00000000-0000-4000-8000-000000000000
+      run: .github/scripts/generate_toolbox.sh "$RUNNER_TEMP/generated"
+
+    # MatBox tasks run on the current folder, so the generated toolbox
+    # replaces the template checkout in the workspace
+    - name: Move generated toolbox into the workspace
+      run: |
+        rm -rf template
+        cp -r "$RUNNER_TEMP/generated/main/." .
+
+    - name: Check that no template syntax is left
+      run: |
+        # Workflow files contain GitHub Actions expressions and are not rendered
+        if grep -rn --exclude-dir=.git --exclude-dir=workflows -e '{{' -e '{%' .; then
+          echo "::error::Generated files contain unrendered template syntax"
+          exit 1
+        fi
+
+    - name: Check that MLToolboxInfo.json is valid JSON
+      run: python3 -c "import json; json.load(open('tools/MLToolboxInfo.json'))"
+
+    - uses: matlab-actions/setup-matlab@v2
+      with:
+        release: latest
+
+    - uses: ehennestad/matbox-actions/install-matbox@v1
+
+    - name: Check code, run tests and package the toolbox
+      uses: matlab-actions/run-command@v2
+      with:
+        command: |
+          addpath(genpath("src"));
+          addpath(genpath("tools"));
+          addpath(genpath("tests"));
+          matbox.tasks.codecheckToolbox(pwd, "FoldersToCheck", "src", ...
+              "CreateBadge", false, "RequireIssuesResolved", true);
+          matbox.tasks.testToolbox(pwd, "SourceFolderName", "src", ...
+              "TestsFolderName", "tests", "CreateBadge", false);
+          matbox.tasks.packageToolbox(pwd, "specific", "0.0.1");
