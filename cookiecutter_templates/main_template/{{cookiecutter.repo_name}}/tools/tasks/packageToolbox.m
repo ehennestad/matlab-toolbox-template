@@ -2,10 +2,10 @@ function [newVersion, mltbxPath] = packageToolbox(releaseType, versionString, va
 % packageToolbox - Package the toolbox as an MLTBX file with MatBox
 %
 %   [newVersion, mltbxPath] = packageToolbox(releaseType, versionString)
-%   packages the src folder into the releases folder. releaseType is one of
+%   packages the src/{{ cookiecutter.namespace_name }} folder into the releases folder. releaseType is one of
 %   "build", "major", "minor", "patch" or "specific", and versionString is
-%   the version to use with "specific". Name-value arguments are passed on
-%   to matbox.tasks.packageToolbox.
+%   the version to use with "specific". Name-value arguments other than
+%   SourceFolderName are passed on to matbox.tasks.packageToolbox.
 %
 %   The release workflow calls this function when it is on the path, so
 %   local runs and CI runs use the same settings.
@@ -21,8 +21,10 @@ function [newVersion, mltbxPath] = packageToolbox(releaseType, versionString, va
 
     {{ cookiecutter.namespace_name }}tools.installMatBox()
     projectRootDirectory = {{ cookiecutter.namespace_name }}tools.projectdir();
+    % The source folder is passed last so it overrides the one the CI workflows
+    % pass, which is the src folder above it
     [newVersion, mltbxPath] = matbox.tasks.packageToolbox(projectRootDirectory, ...
         releaseType, versionString, ...
-        "SourceFolderName", "src", ...
-        varargin{:});
+        varargin{:}, ...
+        "SourceFolderName", fullfile("src", "{{ cookiecutter.namespace_name }}"));
 end

@@ -85,7 +85,15 @@ jobs:
           addpath(genpath("tools"));
           codecheckToolbox("CreateBadge", false, "RequireIssuesResolved", true);
           testToolbox("CreateBadge", false);
-          packageToolbox("specific", "0.0.1");
+          % The release workflow passes its source_directory, the src folder
+          packageToolbox("specific", "0.0.1", "SourceFolderName", "src");
+
+          % Packaging writes the version to the Contents.m that toolboxversion reads
+          addpath(genpath("src"));
+          toolboxInfo = jsondecode(fileread(fullfile("tools", "MLToolboxInfo.json")));
+          packagedVersion = feval(toolboxInfo.Namespace + ".toolboxversion");
+          assert(strcmp(packagedVersion, "0.0.1"), ...
+              "toolboxversion returned %s after packaging version 0.0.1.", packagedVersion)
 
   test-config-validation:
     name: Reject an invalid config

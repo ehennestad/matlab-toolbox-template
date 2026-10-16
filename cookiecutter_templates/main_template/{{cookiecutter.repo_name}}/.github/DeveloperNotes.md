@@ -30,8 +30,8 @@ matbox.installRequirements({{ cookiecutter.namespace_name }}tools.projectdir())
 ## Running tests and code checks
 
 ```matlab
-testToolbox()       % Runs the tests in tests/ and measures coverage of src/
-codecheckToolbox()  % Runs Code Analyzer on src/
+testToolbox()       % Runs the tests in tests/ and measures coverage of src/{{ cookiecutter.namespace_name }}/
+codecheckToolbox()  % Runs Code Analyzer on src/{{ cookiecutter.namespace_name }}/
 ```
 
 Reports are saved in `docs/reports`. The *Test code* workflow calls the same functions on pushes and pull requests to `main`.
