@@ -12,7 +12,7 @@ classdef ToolboxTest <  matlab.unittest.TestCase
         function testToolboxVersion(testCase)
             versionStr = {{cookiecutter.namespace_name}}.toolboxversion();
             testCase.verifyClass(versionStr, 'char')
-            testCase.verifyTrue(startsWith(versionStr, 'Version'))
+            testCase.verifyMatches(versionStr, '^\d+\.\d+\.\d+(\.\d+)?$')
         end
 
         function testGettingStartedFindsExamplesFolder(testCase)
