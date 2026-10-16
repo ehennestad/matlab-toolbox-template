@@ -8,9 +8,9 @@ Use this template to create a best-practice MATLAB toolbox, ready for continuous
 - Uses [MatBox](https://github.com/ehennestad/MatBox) and [MatBox Actions](https://github.com/ehennestad/matbox-actions) for continuous integration 
 
 ## Step-by-step instructions
-[![Use this template](https://img.shields.io/badge/Use_this_template-2ea44f?style=for-the-badge&logo=github)](https://github.com/new?template_owner=ehennestad&template_name=Matlab-Toolbox-Template&owner=%40me&name=my-matlab-toolbox&description=My+clone+matlab+toolbox&visibility=public)
+[![Use this template](resources/images/use-this-template.svg)](https://github.com/new?template_owner=ehennestad&template_name=Matlab-Toolbox-Template&owner=%40me&name=my-matlab-toolbox&description=My+clone+matlab+toolbox&visibility=public)
 
-1. Right-click **"Use template"** and open the link in a new tab. Fill out the fields and create a new repository
+1. Right-click **"Use this template"** and open the link in a new tab. Fill out the fields and create a new repository
 
 In the new repository:
 
