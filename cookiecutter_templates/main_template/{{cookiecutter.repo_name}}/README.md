@@ -49,10 +49,12 @@ matbox.installRequirements(path/to/toolboxRootDir)
 ## Contributing
 Please see the [Contributing guidelines](.github/CONTRIBUTING.md) and the [Developer notes](.github/DeveloperNotes.md)
 
+{% if cookiecutter.license -%}
 ## License
 
 This project is available under the {{ cookiecutter.license }} License. See the LICENSE file for details.
 
+{% endif -%}
 ## Author
 
 {{ cookiecutter.author_name }} ({{ cookiecutter.author_email }})

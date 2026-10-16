@@ -50,10 +50,10 @@ def validate_config(config):
     license_name = (config.get('repository') or {}).get('license')
     available_licenses = sorted(
         os.path.splitext(name)[0] for name in os.listdir(LICENSE_FOLDER))
-    if license_name not in available_licenses:
+    if license_name is not None and license_name not in available_licenses:
         problems.append(
             f'repository.license is "{license_name}". '
-            f'Use one of: {", ".join(available_licenses)}.')
+            f'Use one of: {", ".join(available_licenses)}, or null for no license.')
 
     toolbox = config.get('matlab_toolbox') or {}
     for field in REQUIRED_TOOLBOX_FIELDS:

@@ -1,6 +1,6 @@
 # General GitHub Repository Settings
 repository:
-  license: MIT      # Select a license from the options below
+  license: MIT      # Select a license from the options below, or null for no license
   # License Options:
   # - AGPL-3.0 
   # - Apache-2.0 
