@@ -16,12 +16,18 @@ concurrency:
 
 jobs:
   test-template:
-    name: Generate and test a toolbox
+    name: Generate and test a toolbox (${{ matrix.config }})
     # A repository created from the template runs its push workflows on the
     # creation commit and on the config.yaml push that starts initialization,
     # before initialization has removed this file
     if: ${{ endsWith(github.repository, '/matlab-toolbox-template') }}
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - config.yaml
+          - .github/test-configs/special-characters.yaml
 
     steps:
     - uses: actions/checkout@v4
@@ -39,7 +45,12 @@ jobs:
       working-directory: template
       env:
         TOOLBOX_UUID: 00000000-0000-4000-8000-000000000000
-      run: .github/scripts/generate_toolbox.sh "$RUNNER_TEMP/generated"
+        TEST_CONFIG: ${{ matrix.config }}
+      run: |
+        if [ "$TEST_CONFIG" != "config.yaml" ]; then
+          cp "$TEST_CONFIG" config.yaml
+        fi
+        .github/scripts/generate_toolbox.sh "$RUNNER_TEMP/generated"
 
     # MatBox tasks run on the current folder, so the generated toolbox
     # replaces the template checkout in the workspace
