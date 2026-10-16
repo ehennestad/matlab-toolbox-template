@@ -30,11 +30,11 @@ jobs:
           - .github/test-configs/special-characters.yaml
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v7
       with:
         path: template
 
-    - uses: actions/setup-python@v5
+    - uses: actions/setup-python@v7
       with:
         python-version: '3.11'
 
@@ -70,14 +70,14 @@ jobs:
     - name: Check that MLToolboxInfo.json is valid JSON
       run: python3 -c "import json; json.load(open('tools/MLToolboxInfo.json'))"
 
-    - uses: matlab-actions/setup-matlab@v2
+    - uses: matlab-actions/setup-matlab@v3
       with:
         release: latest
 
     - uses: ehennestad/matbox-actions/install-matbox@v1
 
     - name: Check code, run tests and package the toolbox
-      uses: matlab-actions/run-command@v2
+      uses: matlab-actions/run-command@v3
       with:
         # The shared CI actions call these task functions from tools/tasks
         # when they exist
@@ -100,9 +100,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v7
 
-    - uses: actions/setup-python@v5
+    - uses: actions/setup-python@v7
       with:
         python-version: '3.11'
 
