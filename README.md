@@ -73,10 +73,10 @@ matlab_toolbox:
     - Signal Processing Toolbox
 
 fileexchange:
-  fex_url: None
+  fex_url: null
 
 codecov:
-  badge_token: None
+  badge_token: null
 ```
 
 ## Directory structure and toolbox best practices
