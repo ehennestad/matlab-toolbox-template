@@ -28,9 +28,9 @@ matlab_toolbox:
     A detailed description of your MATLAB toolbox.
     This can span multiple lines to provide users with enough information
     on what your toolbox offers and how it can be used.
-  dependencies:                                     # Required MATLAB products
+  dependencies:                                     # Required MathWorks products
     - MATLAB
-    - Statistics and Machine Learning Toolbox
+    # - Statistics and Machine Learning Toolbox     # Add products the toolbox needs
 
 # Publishing options
 codecov:

@@ -42,6 +42,7 @@ The following table describes all available configuration options in `config.yam
 | `matlab_toolbox.author_company` | Company or organization name. Used in license files and documentation headers. Example: `Acme Corporation` |
 | `matlab_toolbox.toolbox_summary` | Brief one-line description of what the toolbox does. Used in package metadata and README headers. Example: `A collection of signal processing utilities` |
 | `matlab_toolbox.toolbox_description` | Detailed multi-line description of the toolbox functionality, features, and use cases. Supports YAML multi-line syntax with `\|`. Used in documentation and package descriptions. |
+| `matlab_toolbox.dependencies` | List of MathWorks products the toolbox requires, written as product names. Listed under requirements in the README. Default: `MATLAB`. Example: `[MATLAB, Signal Processing Toolbox]` |
 | **Optional Settings** | |
 | `fileexchange.fex_url` | (Optional) MATLAB File Exchange URL if your toolbox is published there. Used for badges and links. Example: `https://www.mathworks.com/matlabcentral/fileexchange/12345` |
 | `codecov.badge_token` | (Optional) Codecov badge token. Used to display code coverage badges with codecov in README. Coverage reports are uploaded only when the repository also has a `CODECOV_TOKEN` Actions secret holding the Codecov upload token. |
@@ -67,6 +68,9 @@ matlab_toolbox:
     - Signal generation and manipulation functions
     
     Designed for researchers and engineers working with digital signal processing.
+  dependencies:
+    - MATLAB
+    - Signal Processing Toolbox
 
 fileexchange:
   fex_url: None
