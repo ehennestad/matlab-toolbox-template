@@ -58,4 +58,6 @@ This project is available under the {{ cookiecutter.license }} License. See the 
 ## Author
 
 {{ cookiecutter.author_name }} ({{ cookiecutter.author_email }})
+{% if cookiecutter.author_company -%}
 {{ cookiecutter.author_company }}
+{% endif -%}
