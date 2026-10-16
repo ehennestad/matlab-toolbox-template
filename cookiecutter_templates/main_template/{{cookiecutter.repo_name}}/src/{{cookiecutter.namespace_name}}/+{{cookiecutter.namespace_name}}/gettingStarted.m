@@ -26,8 +26,9 @@ function gettingStarted()
     
     % Display examples
     fprintf('Examples:\n');
-    examplesDir = fullfile({{ cookiecutter.namespace_name }}.toolboxdir(), 'code', 'examples');
-    if exist(examplesDir, 'dir')
+    % toolboxdir returns the folder that contains the {{ cookiecutter.namespace_name }} folder
+    examplesDir = fullfile({{ cookiecutter.namespace_name }}.toolboxdir(), '{{ cookiecutter.namespace_name }}', 'examples');
+    if isfolder(examplesDir)
         exampleFiles = dir(fullfile(examplesDir, '*.m'));
         if ~isempty(exampleFiles)
             for i = 1:length(exampleFiles)
@@ -40,15 +41,5 @@ function gettingStarted()
         fprintf('  Examples directory not found.\n');
     end
     
-    % Display documentation
-    fprintf('\nDocumentation:\n');
-    docsDir = fullfile({{ cookiecutter.namespace_name }}.toolboxdir(), 'docs');
-    if exist(docsDir, 'dir')
-        fprintf('  Documentation is available in the docs directory:\n');
-        fprintf('  %s\n', docsDir);
-    else
-        fprintf('  Documentation directory not found.\n');
-    end
-    
-    fprintf('\nFor more information, see the README.md file in the toolbox directory.\n');
+    fprintf('\nFor more information, see https://github.com/{{ cookiecutter.repo_owner }}/{{ cookiecutter.repo_name }}\n');
 end

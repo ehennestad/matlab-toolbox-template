@@ -8,8 +8,8 @@ This document provides guidance for developing and maintaining the {{ cookiecutt
 {{ cookiecutter.repo_name }}/
 ├── {{ "%-47s" % ("src/" + cookiecutter.namespace_name + "/") }}# Main toolbox source code
 │   ├── +{{ "%-42s" % (cookiecutter.namespace_name + "/") }}# MATLAB package namespace
-│   ├── Contents.m                                 # Toolbox contents listing
-│   └── gettingStarted.m                           # Getting started guide
+│   │   └── gettingStarted.m                       # Getting started guide
+│   └── Contents.m                                 # Toolbox contents listing
 ├── tests/                                         # Unit tests and test utilities
 │   ├── +{{ "%-42s" % (cookiecutter.namespace_name + "/") }}# Namespace for unit tests and test utilites
 ├── tools/                                         # Development and build tools

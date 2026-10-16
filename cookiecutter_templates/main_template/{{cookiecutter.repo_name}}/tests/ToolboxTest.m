@@ -14,5 +14,10 @@ classdef ToolboxTest <  matlab.unittest.TestCase
             testCase.verifyClass(versionStr, 'char')
             testCase.verifyTrue(startsWith(versionStr, 'Version'))
         end
+
+        function testGettingStartedFindsExamplesFolder(testCase)
+            output = evalc('{{cookiecutter.namespace_name}}.gettingStarted()');
+            testCase.verifyFalse(contains(output, 'Examples directory not found'))
+        end
     end
 end
