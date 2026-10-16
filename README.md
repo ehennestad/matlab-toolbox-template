@@ -18,6 +18,13 @@ In the new repository:
 3. [**Edit the configuration file**](../../edit/main/config.yaml) (`config.yaml`) to initialize your MATLAB toolbox repository.
 4. **Commit and push** the changes to the main branch
 5. **Wait** ~30 seconds for the repository to self-initialize and refresh the page
+6. **Before the first release**, add a deploy key with write access. The release workflow (`prepare-release.yml`) checks out the repository with this key so it can push the release commit and tag, and fails without it. From a clone of the new repository:
+   ```bash
+   ssh-keygen -t ed25519 -N "" -C "release workflow" -f deploy_key
+   gh repo deploy-key add deploy_key.pub --allow-write --title "Release workflow"
+   gh secret set DEPLOY_KEY < deploy_key
+   rm deploy_key deploy_key.pub
+   ```
 
 ## Configuration reference
 

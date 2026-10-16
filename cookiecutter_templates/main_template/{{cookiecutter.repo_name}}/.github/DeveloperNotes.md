@@ -175,6 +175,19 @@ Todo
 {{ cookiecutter.namespace_name }}tools.installMatBox()
 ```
 
+### 7. Releasing
+
+Push a tag in `vMAJOR.MINOR.PATCH` form, or run the *Prepare toolbox release* workflow manually with a version number. The workflow tests the toolbox, packages it, then pushes a release commit and tag and creates a GitHub release.
+
+The workflow checks out the repository with an SSH deploy key stored in the `DEPLOY_KEY` Actions secret, and fails without it. To set it up once:
+
+```bash
+ssh-keygen -t ed25519 -N "" -C "release workflow" -f deploy_key
+gh repo deploy-key add deploy_key.pub --allow-write --title "Release workflow"
+gh secret set DEPLOY_KEY < deploy_key
+rm deploy_key deploy_key.pub
+```
+
 ## 📝 Coding Standards
 
 ### Documentation Standards
