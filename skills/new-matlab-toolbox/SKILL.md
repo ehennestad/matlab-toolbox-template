@@ -15,6 +15,13 @@ setup. Ask the user before each step that creates or changes something on GitHub
 
 ## 1. Check the tools
 
+When a check below says to use the GitHub flow, stop and tell the user to create the repository on GitHub
+with "Use this template" as described in the template's README
+(https://github.com/ehennestad/matlab-toolbox-template). That path needs no local tools.
+
+- The generator is a bash script that calls `python3`, so it runs on macOS, on Linux and on Windows inside
+  WSL. On Windows outside WSL (PowerShell, cmd or Git Bash), use the GitHub flow: a Windows Python install
+  provides `python` and `py` rather than `python3`, and `python3` there usually starts the Microsoft Store.
 - `git` and `gh` must be installed. `gh auth status` must show a login with the `repo` and `workflow` token
   scopes. The first push creates files under `.github/workflows/`, and GitHub rejects it without `workflow`.
   If the scope is missing, ask the user to run `gh auth refresh -s workflow`. It opens a browser, so the user
@@ -25,9 +32,7 @@ setup. Ask the user before each step that creates or changes something on GitHub
     environment in a temporary folder (`python3 -m venv <work>/venv`,
     `<work>/venv/bin/pip install cookiecutter pyyaml jinja2`) and put `<work>/venv/bin` first on `PATH` when
     you run the generator. Do not install into the user's global Python.
-  - No Python: stop. Tell the user to create the repository on GitHub with "Use this template" as described
-    in the template's README (https://github.com/ehennestad/matlab-toolbox-template). That path needs no
-    local tools.
+  - No Python: use the GitHub flow.
 
 ## 2. Get the template
 
