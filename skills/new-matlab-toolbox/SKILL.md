@@ -61,7 +61,9 @@ for the values. Suggest values where you can and let the user confirm them; do n
 - GitHub repository as `owner/repo`. Suggest the user's login (`gh api user --jq .login`) as owner and a
   kebab-case name from the toolbox name. The repository name is also the folder name and is written into the
   generated files.
-- Visibility: public or private.
+- Visibility: public or private. The template's CI runs MATLAB on GitHub-hosted runners, which MathWorks
+  licenses for public repositories only. In a private repository the test and release workflows fail with a
+  licensing error. Tell the user this before they choose.
 - Where on disk the toolbox goes. The output folder must not exist or must be empty.
 - `matlab_toolbox`: `namespace_name`, `toolbox_name`, `author_name`, `author_email`, `author_company`
   (optional), `toolbox_summary`, `toolbox_description`, `dependencies`. `git config user.name` and
@@ -87,8 +89,18 @@ Do not work around a check.
 
 - Show the user the file tree and the generated `README.md`.
 - If `dependencies` lists products other than `MATLAB`, CI does not install them yet. In
-  `.github/workflows/test-code.yml` and `.github/workflows/prepare-release.yml`, uncomment `matlab_products: >`
-  and list each product on its own line, with underscores for spaces (`Signal_Processing_Toolbox`). Show the
+  `.github/workflows/test-code.yml` and `.github/workflows/prepare-release.yml`, replace the commented block
+  (`# matlab_products: >` and the two commented example lines under it) with the key and one product per line,
+  indented two spaces deeper than the key, with underscores for spaces:
+
+  ```yaml
+        matlab_products: >
+          Signal_Processing_Toolbox
+  ```
+
+  A product line after commented lines that are kept breaks the YAML, and an example line indented under the
+  key becomes part of the value. Check that both files still parse, with the Python that has `pyyaml`:
+  `python3 -c "import sys, yaml; [yaml.safe_load(open(f)) for f in sys.argv[1:]]" <the two files>`. Show the
   user the diff.
 - Make the first commit:
 
@@ -111,8 +123,8 @@ git -C <output-folder> push -u origin main
 The workflows commit updated badges back to the repository, which needs write permission for the workflow
 token. Set it before the first push.
 
-The test and spelling workflows skip their first run, so the first push runs no tests. They run from the next
-push to `main` or the first pull request. Tell the user.
+The test and spelling workflows skip their first run, so the first push runs no tests. The tests run on the
+next push to `main`, or the next pull request, that changes files outside `*.md` and `.github/`. Tell the user.
 
 ## 7. Finish the setup
 
