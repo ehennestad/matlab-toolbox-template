@@ -36,17 +36,20 @@ with "Use this template" as described in the template's README
 
 ## 2. Get the template
 
-Clone the template version this skill came from, so the steps here match the generator's options. When the
+Use the template version this skill came from, so the steps here match the generator's options. When the
 skill was installed with `gh skill install`, the frontmatter of the installed `SKILL.md` file has a
-`metadata.github-ref` field, such as `refs/tags/v1.0.0`. Clone that ref:
+`metadata.github-ref` field. It holds a full ref such as `refs/tags/v1.0.0` or `refs/heads/main`, or a commit
+SHA when the install was pinned to one. Fetch that value as it is:
 
 ```bash
-git clone --depth 1 --branch <tag-or-branch> https://github.com/ehennestad/matlab-toolbox-template <work>/template
+git init <work>/template
+git -C <work>/template fetch --depth 1 https://github.com/ehennestad/matlab-toolbox-template <ref>
+git -C <work>/template checkout FETCH_HEAD
 ```
 
-`--branch` takes the name without `refs/tags/` or `refs/heads/`. If the field is missing, use the latest
-release (`gh release view --repo ehennestad/matlab-toolbox-template --json tagName --jq .tagName`), or the
-default branch if there is no release. Tell the user which version you used.
+Do not use `git clone --branch`, which rejects a commit SHA. If the field is missing, use the latest release
+tag (`gh release view --repo ehennestad/matlab-toolbox-template --json tagName --jq .tagName`) as `<ref>`, or
+`HEAD` for the default branch if there is no release. Tell the user which version you used.
 
 `<work>` is a new temporary folder. Never generate inside the template clone.
 
