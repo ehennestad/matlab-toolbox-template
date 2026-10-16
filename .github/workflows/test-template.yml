@@ -1,7 +1,7 @@
 name: Test template
 
-# Generates a toolbox from config.yaml the same way initialize.yml does, then
-# checks, tests and packages it. Runs only in the template repository;
+# Generates a toolbox the way initialize.yml does and the way a local user
+# does, then checks, tests and packages it. Runs only in the template repository;
 # initialization removes it from generated repositories.
 
 on:
@@ -25,9 +25,16 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        config:
-          - config.yaml
-          - .github/test-configs/special-characters.yaml
+        include:
+          # Generated from the template root with the repository taken from
+          # GITHUB_REPOSITORY, as initialize.yml does
+          - config: config.yaml
+            local: false
+          # Generated the way a local user generates it: from another folder,
+          # with a config file in that folder, a repository and no
+          # TOOLBOX_UUID given
+          - config: .github/test-configs/special-characters.yaml
+            local: true
 
     steps:
     - uses: actions/checkout@v7
@@ -42,22 +49,30 @@ jobs:
       run: pip install -U pip cookiecutter pyyaml jinja2
 
     - name: Generate toolbox
+      if: ${{ !matrix.local }}
       working-directory: template
       env:
         TOOLBOX_UUID: 00000000-0000-4000-8000-000000000000
+      run: .github/scripts/generate_toolbox.sh "$RUNNER_TEMP/generated"
+
+    - name: Generate toolbox as a local user
+      if: ${{ matrix.local }}
+      working-directory: ${{ runner.temp }}
+      env:
         TEST_CONFIG: ${{ matrix.config }}
       run: |
-        if [ "$TEST_CONFIG" != "config.yaml" ]; then
-          cp "$TEST_CONFIG" config.yaml
-        fi
-        .github/scripts/generate_toolbox.sh "$RUNNER_TEMP/generated"
+        cp "$GITHUB_WORKSPACE/template/$TEST_CONFIG" .
+        "$GITHUB_WORKSPACE/template/.github/scripts/generate_toolbox.sh" \
+          --config "$(basename "$TEST_CONFIG")" \
+          --repository test-owner/test-toolbox \
+          generated
 
     # initialize.yml pushes the toolbox with GITHUB_TOKEN, and GitHub rejects
     # that push if it creates or modifies a workflow file (see AGENTS.md).
     # Deleted workflow files are accepted. The generated files are compared
     # with the committed ones, which is what the push is checked against.
     - name: Check that initialization creates or modifies no workflow file
-      working-directory: ${{ runner.temp }}/generated/main
+      working-directory: ${{ runner.temp }}/generated
       run: |
         status=0
         while IFS= read -r -d '' file; do
@@ -77,7 +92,7 @@ jobs:
     - name: Move generated toolbox into the workspace
       run: |
         rm -rf template
-        cp -r "$RUNNER_TEMP/generated/main/." .
+        cp -r "$RUNNER_TEMP/generated/." .
 
     - name: Check that no template syntax is left
       run: |
@@ -131,8 +146,40 @@ jobs:
 
     - name: Check that validation fails
       run: |
-        cp .github/test-configs/invalid.yaml config.yaml
-        if python3 .github/scripts/validate_config.py; then
+        if python3 .github/scripts/validate_config.py .github/test-configs/invalid.yaml; then
           echo "::error::validate_config.py accepted an invalid config"
           exit 1
         fi
+
+  test-generator-arguments:
+    name: Reject invalid generator arguments
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v7
+
+    # The script checks its arguments before it runs Python, so these steps
+    # need no Python dependencies. Each step checks the error message, so a
+    # failure for another reason does not pass.
+    - name: Check that a malformed repository is rejected
+      run: |
+        for repository in "owner" "owner/my toolbox" "owner/repo/extra"; do
+          if .github/scripts/generate_toolbox.sh --repository "$repository" \
+              "$RUNNER_TEMP/out" 2> error.txt; then
+            echo "::error::generate_toolbox.sh accepted the repository \"$repository\""
+            exit 1
+          fi
+          grep -q "is not an owner/repo name" error.txt
+        done
+
+    - name: Check that a non-empty output folder is rejected
+      run: |
+        mkdir -p "$RUNNER_TEMP/existing"
+        touch "$RUNNER_TEMP/existing/keep.txt"
+        if .github/scripts/generate_toolbox.sh --repository test-owner/test-toolbox \
+            "$RUNNER_TEMP/existing" 2> error.txt; then
+          echo "::error::generate_toolbox.sh accepted a non-empty output folder"
+          exit 1
+        fi
+        grep -q "already exists and is not an empty folder" error.txt
+        test -f "$RUNNER_TEMP/existing/keep.txt"

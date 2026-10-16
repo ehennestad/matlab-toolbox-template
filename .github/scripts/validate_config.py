@@ -1,9 +1,12 @@
 #!/usr/bin/env python3
 """
-Check config.yaml before a toolbox is generated from it.
+Check a toolbox config file before a toolbox is generated from it.
 
-Prints one GitHub Actions error annotation per problem and exits with status 1
-if any are found.
+Usage: validate_config.py [<config-file>]
+
+Checks config.yaml in the current folder when no file is given. Run from the
+template repository root. Prints one GitHub Actions error annotation per
+problem and exits with status 1 if any are found.
 """
 import os
 import re
@@ -41,9 +44,9 @@ TOOLS_NAMESPACE_SUFFIX = 'tools'
 
 
 def validate_config(config):
-    """Return a list of problems found in the parsed config.yaml content."""
+    """Return a list of problems found in the parsed config file content."""
     if not isinstance(config, dict):
-        return ['config.yaml must contain the repository and matlab_toolbox sections.']
+        return ['The config file must contain the repository and matlab_toolbox sections.']
 
     problems = []
 
@@ -108,19 +111,20 @@ def validate_namespace_name(namespace_name):
 
 
 def main():
-    with open(CONFIG_FILE, 'r') as f:
+    config_file = sys.argv[1] if len(sys.argv) > 1 else CONFIG_FILE
+    with open(config_file, 'r') as f:
         try:
             config = yaml.safe_load(f)
         except yaml.YAMLError as e:
-            print(f'::error file={CONFIG_FILE}::config.yaml is not valid YAML: {str(e).replace(chr(10), " ")}')
+            print(f'::error file={config_file}::{config_file} is not valid YAML: {str(e).replace(chr(10), " ")}')
             sys.exit(1)
 
     problems = validate_config(config)
     for problem in problems:
-        print(f'::error file={CONFIG_FILE}::{problem}')
+        print(f'::error file={config_file}::{problem}')
     if problems:
         sys.exit(1)
-    print('config.yaml is valid')
+    print(f'{config_file} is valid')
 
 
 if __name__ == '__main__':
