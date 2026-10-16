@@ -14,6 +14,8 @@ output_dir="$1"
 project_name="${GITHUB_REPOSITORY##*/}"
 render_dir="$(mktemp -d)"
 
+python3 .github/scripts/validate_config.py
+
 # Empty when config.yaml has no repository.license or sets it to null
 license=$(python3 -c "
 import yaml

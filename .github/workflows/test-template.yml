@@ -86,3 +86,25 @@ jobs:
           codecheckToolbox("CreateBadge", false, "RequireIssuesResolved", true);
           testToolbox("CreateBadge", false);
           packageToolbox("specific", "0.0.1");
+
+  test-config-validation:
+    name: Reject an invalid config
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+
+    - name: Install Python dependencies
+      run: pip install -U pip pyyaml
+
+    - name: Check that validation fails
+      run: |
+        cp .github/test-configs/invalid.yaml config.yaml
+        if python3 .github/scripts/validate_config.py; then
+          echo "::error::validate_config.py accepted an invalid config"
+          exit 1
+        fi

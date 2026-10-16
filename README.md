@@ -189,7 +189,7 @@ To modify the generated projects:
 1. **Permission errors**: Ensure the repository has Actions write permissions enabled
 2. **Workflow not triggering**: Ensure you're pushing changes to `config.yaml` on the main branch
 3. **Template errors**: Verify that both template directories exist and contain valid cookiecutter structures
-4. **Configuration errors**: Verify your `config.yaml` syntax is valid YAML
+4. **Configuration errors**: The initialize workflow checks `config.yaml` before generating anything and reports each problem in the workflow log: invalid YAML, an unknown license, missing fields, a namespace that is not a valid MATLAB name, or characters MATLAB does not allow in a toolbox name (`" & : * ? < > |`)
 
 ### Debugging
 
