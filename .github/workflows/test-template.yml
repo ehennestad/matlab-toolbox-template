@@ -1,8 +1,8 @@
 name: Test template
 
 # Generates a toolbox from config.yaml the same way initialize.yml does, then
-# checks, tests and packages it. Initialization removes this workflow, so it
-# runs only in the template repository.
+# checks, tests and packages it. Runs only in the template repository;
+# initialization removes it from generated repositories.
 
 on:
   push:
@@ -17,6 +17,10 @@ concurrency:
 jobs:
   test-template:
     name: Generate and test a toolbox
+    # A repository created from the template runs its push workflows on the
+    # creation commit and on the config.yaml push that starts initialization,
+    # before initialization has removed this file
+    if: ${{ endsWith(github.repository, '/matlab-toolbox-template') }}
     runs-on: ubuntu-latest
 
     steps:
