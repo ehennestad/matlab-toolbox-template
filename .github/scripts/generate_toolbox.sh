@@ -1,23 +1,26 @@
 #!/usr/bin/env bash
 # Generate the content of an initialized toolbox repository from a config file.
 #
-# Usage: generate_toolbox.sh [--config <file>] [--repository <owner/repo>] <output-dir>
-#
-#   --config      Toolbox configuration. Default: config.yaml in the template
-#                 repository.
-#   --repository  GitHub repository of the toolbox, as owner/repo. The
-#                 repository name is the name of the toolbox folder and is
-#                 written into the generated files. Default: the
-#                 GITHUB_REPOSITORY environment variable.
-#   <output-dir>  Folder to write the toolbox to. It must not exist or be empty.
-#
-# The toolbox identifier is TOOLBOX_UUID, or a new random UUID when it is
-# unset. Can run from any folder. Needs python3 with cookiecutter, jinja2 and
-# pyyaml installed.
+# Run with --help for the options. Can run from any folder. Needs python3 with
+# cookiecutter, jinja2 and pyyaml installed.
 
 set -euo pipefail
 
-usage="Usage: generate_toolbox.sh [--config <file>] [--repository <owner/repo>] <output-dir>"
+print_usage() {
+    cat <<'EOF'
+Usage: generate_toolbox.sh [--config <file>] [--repository <owner/repo>] <output-dir>
+
+  --config      Toolbox configuration. Default: config.yaml in the template
+                repository.
+  --repository  GitHub repository of the toolbox, as owner/repo. The
+                repository name is the name of the toolbox folder and is
+                written into the generated files. Default: the
+                GITHUB_REPOSITORY environment variable.
+  <output-dir>  Folder to write the toolbox to. It must not exist or be empty.
+
+The toolbox identifier is TOOLBOX_UUID, or a new random UUID when it is unset.
+EOF
+}
 
 config_file=""
 repository="${GITHUB_REPOSITORY:-}"
@@ -34,18 +37,18 @@ while [ $# -gt 0 ]; do
             shift 2
             ;;
         -h|--help)
-            echo "$usage"
+            print_usage
             exit 0
             ;;
         -*)
             echo "Error: unknown option $1" >&2
-            echo "$usage" >&2
+            print_usage >&2
             exit 1
             ;;
         *)
             if [ -n "$output_dir" ]; then
                 echo "Error: more than one output folder given" >&2
-                echo "$usage" >&2
+                print_usage >&2
                 exit 1
             fi
             output_dir="$1"
@@ -55,12 +58,15 @@ while [ $# -gt 0 ]; do
 done
 
 if [ -z "$output_dir" ]; then
-    echo "$usage" >&2
+    print_usage >&2
     exit 1
 fi
 
-if [[ ! "$repository" =~ ^[^/]+/[^/]+$ ]]; then
-    echo "Error: the repository must be given as owner/repo with --repository or GITHUB_REPOSITORY." >&2
+# The characters GitHub allows in owner and repository names
+repository_pattern='^[A-Za-z0-9-]+/[A-Za-z0-9._-]+$'
+if [[ ! "$repository" =~ $repository_pattern ]]; then
+    echo "Error: the repository \"$repository\" is not an owner/repo name. Give it with --repository" \
+        "or GITHUB_REPOSITORY, using only letters, digits, hyphens, underscores and periods." >&2
     exit 1
 fi
 
@@ -124,7 +130,9 @@ else
     echo "Warning: License '${license}' not found"
 fi
 
-cookiecutter "$template_dir" --no-input --output-dir "$render_dir"
+# --default-config ignores the user's cookiecutter config file, whose
+# default_context would otherwise override values from the toolbox config
+cookiecutter "$template_dir" --no-input --default-config --output-dir "$render_dir"
 
 mkdir -p "$output_dir"
 

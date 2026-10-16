@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Check config.yaml before a toolbox is generated from it.
+Check a toolbox config file before a toolbox is generated from it.
 
 Usage: validate_config.py [<config-file>]
 
@@ -44,9 +44,9 @@ TOOLS_NAMESPACE_SUFFIX = 'tools'
 
 
 def validate_config(config):
-    """Return a list of problems found in the parsed config.yaml content."""
+    """Return a list of problems found in the parsed config file content."""
     if not isinstance(config, dict):
-        return ['config.yaml must contain the repository and matlab_toolbox sections.']
+        return ['The config file must contain the repository and matlab_toolbox sections.']
 
     problems = []
 

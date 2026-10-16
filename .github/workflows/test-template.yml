@@ -31,7 +31,8 @@ jobs:
           - config: config.yaml
             local: false
           # Generated the way a local user generates it: from another folder,
-          # with a config file, a repository and no TOOLBOX_UUID given
+          # with a config file in that folder, a repository and no
+          # TOOLBOX_UUID given
           - config: .github/test-configs/special-characters.yaml
             local: true
 
@@ -60,8 +61,9 @@ jobs:
       env:
         TEST_CONFIG: ${{ matrix.config }}
       run: |
+        cp "$GITHUB_WORKSPACE/template/$TEST_CONFIG" .
         "$GITHUB_WORKSPACE/template/.github/scripts/generate_toolbox.sh" \
-          --config "$GITHUB_WORKSPACE/template/$TEST_CONFIG" \
+          --config "$(basename "$TEST_CONFIG")" \
           --repository test-owner/test-toolbox \
           generated
 
@@ -144,8 +146,40 @@ jobs:
 
     - name: Check that validation fails
       run: |
-        cp .github/test-configs/invalid.yaml config.yaml
-        if python3 .github/scripts/validate_config.py; then
+        if python3 .github/scripts/validate_config.py .github/test-configs/invalid.yaml; then
           echo "::error::validate_config.py accepted an invalid config"
           exit 1
         fi
+
+  test-generator-arguments:
+    name: Reject invalid generator arguments
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v7
+
+    # The script checks its arguments before it runs Python, so these steps
+    # need no Python dependencies. Each step checks the error message, so a
+    # failure for another reason does not pass.
+    - name: Check that a malformed repository is rejected
+      run: |
+        for repository in "owner" "owner/my toolbox" "owner/repo/extra"; do
+          if .github/scripts/generate_toolbox.sh --repository "$repository" \
+              "$RUNNER_TEMP/out" 2> error.txt; then
+            echo "::error::generate_toolbox.sh accepted the repository \"$repository\""
+            exit 1
+          fi
+          grep -q "is not an owner/repo name" error.txt
+        done
+
+    - name: Check that a non-empty output folder is rejected
+      run: |
+        mkdir -p "$RUNNER_TEMP/existing"
+        touch "$RUNNER_TEMP/existing/keep.txt"
+        if .github/scripts/generate_toolbox.sh --repository test-owner/test-toolbox \
+            "$RUNNER_TEMP/existing" 2> error.txt; then
+          echo "::error::generate_toolbox.sh accepted a non-empty output folder"
+          exit 1
+        fi
+        grep -q "already exists and is not an empty folder" error.txt
+        test -f "$RUNNER_TEMP/existing/keep.txt"
