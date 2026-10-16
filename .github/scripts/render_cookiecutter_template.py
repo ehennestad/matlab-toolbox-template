@@ -15,7 +15,7 @@ def render_cookiecutter_template(template_name):
     Render a cookiecutter.json.j2 template with config.yaml and environment data
     
     Args:
-        template_name: Name of the template (e.g., 'main_template', 'gh-badges_template')
+        template_name: Name of the template (e.g., 'main_template')
     
     Returns:
         str: Path to the prepared temporary template directory
