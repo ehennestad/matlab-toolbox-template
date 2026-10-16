@@ -44,17 +44,13 @@ jobs:
         git push origin template-archive --force
         git checkout main
 
-    - name: Generate toolbox UUID
-      id: uuid
-      run: echo "TOOLBOX_UUID=$(node -e 'console.log(crypto.randomUUID())')" >> $GITHUB_ENV
-
     - name: Generate toolbox repository content
       run: .github/scripts/generate_toolbox.sh /tmp/generated
 
     - name: Populate main branch
       run: |
         find . -mindepth 1 -maxdepth 1 ! -name '.git' -exec rm -rf {} +
-        cp -r /tmp/generated/main/. .
+        cp -r /tmp/generated/. .
 
     - name: Commit and push main branch
       run: |

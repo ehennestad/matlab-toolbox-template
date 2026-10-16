@@ -1,7 +1,7 @@
 name: Test template
 
-# Generates a toolbox from config.yaml the same way initialize.yml does, then
-# checks, tests and packages it. Runs only in the template repository;
+# Generates a toolbox the way initialize.yml does and the way a local user
+# does, then checks, tests and packages it. Runs only in the template repository;
 # initialization removes it from generated repositories.
 
 on:
@@ -25,9 +25,15 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        config:
-          - config.yaml
-          - .github/test-configs/special-characters.yaml
+        include:
+          # Generated from the template root with the repository taken from
+          # GITHUB_REPOSITORY, as initialize.yml does
+          - config: config.yaml
+            local: false
+          # Generated the way a local user generates it: from another folder,
+          # with a config file, a repository and no TOOLBOX_UUID given
+          - config: .github/test-configs/special-characters.yaml
+            local: true
 
     steps:
     - uses: actions/checkout@v7
@@ -42,22 +48,29 @@ jobs:
       run: pip install -U pip cookiecutter pyyaml jinja2
 
     - name: Generate toolbox
+      if: ${{ !matrix.local }}
       working-directory: template
       env:
         TOOLBOX_UUID: 00000000-0000-4000-8000-000000000000
+      run: .github/scripts/generate_toolbox.sh "$RUNNER_TEMP/generated"
+
+    - name: Generate toolbox as a local user
+      if: ${{ matrix.local }}
+      working-directory: ${{ runner.temp }}
+      env:
         TEST_CONFIG: ${{ matrix.config }}
       run: |
-        if [ "$TEST_CONFIG" != "config.yaml" ]; then
-          cp "$TEST_CONFIG" config.yaml
-        fi
-        .github/scripts/generate_toolbox.sh "$RUNNER_TEMP/generated"
+        "$GITHUB_WORKSPACE/template/.github/scripts/generate_toolbox.sh" \
+          --config "$GITHUB_WORKSPACE/template/$TEST_CONFIG" \
+          --repository test-owner/test-toolbox \
+          generated
 
     # initialize.yml pushes the toolbox with GITHUB_TOKEN, and GitHub rejects
     # that push if it creates or modifies a workflow file (see AGENTS.md).
     # Deleted workflow files are accepted. The generated files are compared
     # with the committed ones, which is what the push is checked against.
     - name: Check that initialization creates or modifies no workflow file
-      working-directory: ${{ runner.temp }}/generated/main
+      working-directory: ${{ runner.temp }}/generated
       run: |
         status=0
         while IFS= read -r -d '' file; do
@@ -77,7 +90,7 @@ jobs:
     - name: Move generated toolbox into the workspace
       run: |
         rm -rf template
-        cp -r "$RUNNER_TEMP/generated/main/." .
+        cp -r "$RUNNER_TEMP/generated/." .
 
     - name: Check that no template syntax is left
       run: |
