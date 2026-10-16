@@ -177,7 +177,7 @@ To modify the generated projects:
 
 1. **Permission errors**: Ensure the repository has Actions write permissions enabled
 2. **Workflow not triggering**: Ensure you're pushing changes to `config.yaml` on the main branch
-3. **Template errors**: Verify that both template directories exist and contain valid cookiecutter structures
+3. **Template errors**: Verify that `cookiecutter_templates/main_template/` exists and contains `cookiecutter.json.j2` and the `{{cookiecutter.repo_name}}` folder
 4. **Configuration errors**: The initialize workflow checks `config.yaml` before generating anything and reports each problem in the workflow log: invalid YAML, an unknown license, missing fields, a namespace that is not a valid MATLAB name, or characters MATLAB does not allow in a toolbox name (`" & : * ? < > |`)
 
 ### Debugging
@@ -185,7 +185,6 @@ To modify the generated projects:
 - Check the GitHub Actions logs for detailed error messages
 - Verify your `config.yaml` syntax using a YAML validator
 - Ensure all required fields in `matlab_toolbox` section are provided
-- Check that template directories contain the expected `cookiecutter.json` files
 - Verify that the `reusable-check-push-permission.yml` workflow exists and is accessible
 
 ## Contributing
