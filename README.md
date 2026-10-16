@@ -37,7 +37,7 @@ The following table describes all available configuration options in `config.yam
 | `matlab_toolbox.toolbox_description` | Detailed multi-line description of the toolbox functionality, features, and use cases. Supports YAML multi-line syntax with `\|`. Used in documentation and package descriptions. |
 | **Optional Settings** | |
 | `fileexchange.fex_url` | (Optional) MATLAB File Exchange URL if your toolbox is published there. Used for badges and links. Example: `https://www.mathworks.com/matlabcentral/fileexchange/12345` |
-| `codecov.badge_token` | (Optional) Codecov badge token. Used to display code coverage badges with codecov in README. |
+| `codecov.badge_token` | (Optional) Codecov badge token. Used to display code coverage badges with codecov in README. Coverage reports are uploaded only when the repository also has a `CODECOV_TOKEN` Actions secret holding the Codecov upload token. |
 
 ### Example configuration
 
