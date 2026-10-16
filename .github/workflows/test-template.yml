@@ -52,6 +52,26 @@ jobs:
         fi
         .github/scripts/generate_toolbox.sh "$RUNNER_TEMP/generated"
 
+    # initialize.yml pushes the toolbox with GITHUB_TOKEN, and GitHub rejects
+    # that push if it creates or modifies a workflow file (see AGENTS.md).
+    # Deleted workflow files are accepted. The generated files are compared
+    # with the committed ones, which is what the push is checked against.
+    - name: Check that initialization creates or modifies no workflow file
+      working-directory: ${{ runner.temp }}/generated/main
+      run: |
+        status=0
+        while IFS= read -r -d '' file; do
+          if ! git -C "$GITHUB_WORKSPACE/template" cat-file -e "HEAD:$file" 2>/dev/null; then
+            echo "::error::Initialization creates $file, which is not in the template"
+            status=1
+          elif ! git -C "$GITHUB_WORKSPACE/template" show "HEAD:$file" \
+              | diff -u --label "template/$file" --label "generated/$file" - "$file"; then
+            echo "::error::Initialization modifies $file"
+            status=1
+          fi
+        done < <(find .github/workflows ! -type d -print0)
+        exit "$status"
+
     # MatBox tasks run on the current folder, so the generated toolbox
     # replaces the template checkout in the workspace
     - name: Move generated toolbox into the workspace
