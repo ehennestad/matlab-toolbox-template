@@ -83,16 +83,17 @@ codecov:
 
 The toolbox will have the following directory structure:
 ```
-├── src/mynamespace        # Main toolbox code
-│   ├── +mynamespace/      # MATLAB package/namespace for your toolbox
-│   ├── examples/          # Example scripts
-│   ├── internal/          # Internal helper functions
-│   └── resources/         # Resource files
-├── docs/                  # Documentation
-├── tools/                 # Development tools
-│   ├── build/             # Build scripts
-│   ├── tasks/             # Task scripts
-└── tests/                 # Unit tests and test-related scripts
+├── src/mynamespace/         # Code that is packaged into the toolbox
+│   ├── +mynamespace/        # MATLAB namespace for your toolbox
+│   ├── examples/            # Example scripts
+│   └── Contents.m           # Toolbox name and version
+├── docs/                    # Documentation
+├── tests/                   # Unit tests
+├── tools/                   # Development tools, not packaged
+│   ├── +mynamespacetools/   # installMatBox and projectdir
+│   ├── tasks/               # testToolbox, codecheckToolbox, packageToolbox
+│   └── MLToolboxInfo.json   # Toolbox packaging metadata
+└── requirements.txt         # Requirements, installed with MatBox
 ```
 
 This template and it's directory structure is heavily inspired by the [MATLAB Toolbox Best Practices](https://github.com/mathworks/toolboxdesign). If you're looking for a thorough introduction to toolbox design, their guide is a great place to start.  
@@ -170,7 +171,7 @@ To modify the generated projects:
 
 1. Edit files in `cookiecutter_templates/main_template/` for the main toolbox structure
 2. Use `{{cookiecutter.variable_name}}` syntax to reference configuration values
-3. Test changes by updating `config.yaml` and triggering the workflow
+3. Test changes with the *Test template* workflow, which generates a toolbox from `config.yaml` and from the configs in `.github/test-configs/`, then checks, tests and packages it. It runs on pull requests and on pushes to `main`
 
 ## Troubleshooting
 
@@ -195,8 +196,7 @@ To contribute improvements:
 
 1. Fork this repository
 2. Make changes to templates in `cookiecutter_templates/`
-3. Test by updating `config.yaml` and triggering the workflow
-4. Submit a pull request with your changes
+3. Submit a pull request with your changes. The *Test template* workflow generates and tests a toolbox from them
 
 ## License
 
