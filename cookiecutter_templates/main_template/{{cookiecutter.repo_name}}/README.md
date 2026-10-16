@@ -4,7 +4,7 @@
 {%- if cookiecutter.fex_url %}
 [![View {{cookiecutter.toolbox_name}} on File Exchange](https://www.mathworks.com/matlabcentral/images/matlab-file-exchange.svg)]({{cookiecutter.fex_url}})
 {%- endif %}
-[![MATLAB Tests](.github/badges/tests.svg)](https://github.com/{{ cookiecutter.repo_owner }}/{{ cookiecutter.repo_name }}/actions/workflows/test-code.yml)
+[![Run tests](https://github.com/{{ cookiecutter.repo_owner }}/{{ cookiecutter.repo_name }}/actions/workflows/run-tests.yml/badge.svg)](https://github.com/{{ cookiecutter.repo_owner }}/{{ cookiecutter.repo_name }}/actions/workflows/run-tests.yml)
 {%- if cookiecutter.codecov_badge_token %}
 [![codecov](https://codecov.io/gh/{{ cookiecutter.repo_owner }}/{{ cookiecutter.repo_name }}/graph/badge.svg?token={{ cookiecutter.codecov_badge_token }})](https://codecov.io/gh/{{ cookiecutter.repo_owner }}/{{ cookiecutter.repo_name }})
 {%- endif %}

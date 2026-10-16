@@ -34,7 +34,7 @@ testToolbox()       % Runs the tests in tests/ and measures coverage of src/{{ c
 codecheckToolbox()  % Runs Code Analyzer on src/{{ cookiecutter.namespace_name }}/
 ```
 
-Reports are saved in `docs/reports`. The *Test code* workflow calls the same functions on pushes and pull requests to `main`.
+Reports are saved in `docs/reports`. The *Run tests* workflow calls the same functions on pushes and pull requests to `main`.
 
 Tests are class-based `matlab.unittest` tests. See `tests/ToolboxTest.m` for an example.
 
