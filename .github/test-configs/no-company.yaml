@@ -1,0 +1,21 @@
+# Optional author_company left empty
+repository:
+  license: MIT
+
+matlab_toolbox:
+  namespace_name: nocompany
+  toolbox_name: No Company Toolbox
+  author_name: Jane Doe
+  author_email: jane.doe@example.com
+  author_company: null
+  toolbox_summary: A toolbox whose author has no company
+  toolbox_description: |
+    A toolbox generated from a config without an author company.
+  dependencies:
+    - MATLAB
+
+codecov:
+  badge_token: null
+
+fileexchange:
+  fex_url: null

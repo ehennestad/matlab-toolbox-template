@@ -35,6 +35,8 @@ jobs:
           # TOOLBOX_UUID given
           - config: .github/test-configs/special-characters.yaml
             local: true
+          - config: .github/test-configs/no-company.yaml
+            local: true
 
     steps:
     - uses: actions/checkout@v7
@@ -104,6 +106,21 @@ jobs:
 
     - name: Check that MLToolboxInfo.json is valid JSON
       run: python3 -c "import json; json.load(open('tools/MLToolboxInfo.json'))"
+
+    # Jinja writes a None config value as the text "None", and
+    # ToolboxOptions accepts only text for AuthorCompany
+    - name: Check that empty config values are rendered as empty text
+      run: |
+        status=0
+        if grep -nx 'None' README.md; then
+          echo "::error::README.md has a None line from an empty config value"
+          status=1
+        fi
+        if ! python3 -c "import json, sys; info = json.load(open('tools/MLToolboxInfo.json')); sys.exit(not isinstance(info['ToolboxOptions']['AuthorCompany'], str))"; then
+          echo "::error::AuthorCompany in MLToolboxInfo.json is not a text value"
+          status=1
+        fi
+        exit "$status"
 
     - uses: matlab-actions/setup-matlab@v3
       with:

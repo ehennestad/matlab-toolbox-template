@@ -6,7 +6,7 @@
   "namespace_name": {{ config.matlab_toolbox.namespace_name | tojson }},
   "author_name": {{ config.matlab_toolbox.author_name | tojson }},
   "author_email": {{ config.matlab_toolbox.author_email | tojson }},
-  "author_company": {{ config.matlab_toolbox.author_company | tojson }},
+  "author_company": {{ config.matlab_toolbox.author_company | default('', true) | tojson }},
   "toolbox_summary": {{ config.matlab_toolbox.toolbox_summary | tojson }},
   "toolbox_description": {{ config.matlab_toolbox.toolbox_description | replace('\n', ' ') | replace('\r', ' ') | replace('  ', ' ') | trim | tojson }},
   "license": {{ config.repository.license | default('', true) | tojson }},
