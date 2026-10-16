@@ -33,7 +33,7 @@ The following table describes all available configuration options in `config.yam
 | Variable | Description |
 |----------|-------------|
 | **Repository Settings** | |
-| `repository.license` | License type for your project. Options: `MIT`, `Apache-2.0`, `GPL-3.0`, `GPL-2.0`, `LGPL-3.0`, `LGPL-2.1`, `BSD-3-Clause`, `BSD-2-Clause`, `MPL-2.0`, `EPL-1.0`, `AGPL-3.0`, `Unlicense`. Default: `MIT` |
+| `repository.license` | License type for your project. Options: `MIT`, `Apache-2.0`, `GPL-3.0`, `GPL-2.0`, `LGPL-3.0`, `LGPL-2.1`, `BSD-3-Clause`, `BSD-2-Clause`, `MPL-2.0`, `EPL-1.0`, `AGPL-3.0`, `Unlicense`. Set to `null`, or leave the key out, to initialize the repository without a license: no LICENSE file is created and the README has no License section. Packaging then warns that LICENSE is missing until you add one. Default in `config.yaml`: `MIT` |
 | **MATLAB Toolbox Settings** | |
 | `matlab_toolbox.namespace_name` | MATLAB package namespace (lowercase, no spaces, no hyphens). Used for `+namespace` directories and function prefixes. Example: `mytoolbox` |
 | `matlab_toolbox.toolbox_name` | Display name of your toolbox. Used in documentation, packaging, and as the repository title. Example: `My MATLAB Toolbox` |

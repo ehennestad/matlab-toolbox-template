@@ -9,7 +9,7 @@
   "author_company": {{ config.matlab_toolbox.author_company | tojson }},
   "toolbox_summary": {{ config.matlab_toolbox.toolbox_summary | tojson }},
   "toolbox_description": {{ config.matlab_toolbox.toolbox_description | replace('\n', ' ') | replace('\r', ' ') | replace('  ', ' ') | trim | tojson }},
-  "license": {{ config.repository.license | tojson }},
+  "license": {{ config.repository.license | default('', true) | tojson }},
   "copyright_holder": {{ config.matlab_toolbox.author_name | tojson }},
   "matlab_version_min": "R2021a",
   "dependencies": {{ config.matlab_toolbox.dependencies | default(['MATLAB']) | join(',') | tojson }},
