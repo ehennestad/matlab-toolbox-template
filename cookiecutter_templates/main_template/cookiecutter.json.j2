@@ -11,7 +11,7 @@
   "toolbox_description": "{{ config.matlab_toolbox.toolbox_description | replace('\n', ' ') | replace('\r', ' ') | replace('  ', ' ') | trim }}",
   "license": "{{ config.repository.license}}",
   "copyright_holder": "{{ config.matlab_toolbox.author_name }}",
-  "matlab_version_min": "R2019b",
+  "matlab_version_min": "R2021a",
   "dependencies": "{{ config.matlab_toolbox.dependencies | default(['MATLAB']) | join(',') }}",
   "products": "{{ config.matlab_toolbox.dependencies | default(['MATLAB']) | join(',') }}",
   "fex_url": "{{ config.fileexchange.fex_url | default('', true) }}",
