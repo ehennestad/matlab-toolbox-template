@@ -79,12 +79,10 @@ jobs:
     - name: Check code, run tests and package the toolbox
       uses: matlab-actions/run-command@v2
       with:
+        # The shared CI actions call these task functions from tools/tasks
+        # when they exist
         command: |
-          addpath(genpath("src"));
           addpath(genpath("tools"));
-          addpath(genpath("tests"));
-          matbox.tasks.codecheckToolbox(pwd, "FoldersToCheck", "src", ...
-              "CreateBadge", false, "RequireIssuesResolved", true);
-          matbox.tasks.testToolbox(pwd, "SourceFolderName", "src", ...
-              "TestsFolderName", "tests", "CreateBadge", false);
-          matbox.tasks.packageToolbox(pwd, "specific", "0.0.1");
+          codecheckToolbox("CreateBadge", false, "RequireIssuesResolved", true);
+          testToolbox("CreateBadge", false);
+          packageToolbox("specific", "0.0.1");
