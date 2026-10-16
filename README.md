@@ -3,6 +3,7 @@
 Use this template to create a best-practice MATLAB toolbox, ready for continuous integration with testing, code analysis, and toolbox packaging.
 
 - [Instructions for using the template](#step-by-step-instructions)
+- [Agent skill](#create-a-toolbox-with-a-coding-agent) for creating a toolbox repository with a coding agent
 - [Directory structure](#directory-structure-and-toolbox-best-practices) for initialized toolbox repository
 - [Adding (third-party) requirements](#adding-requirements) to your toolbox
 - Uses [MatBox](https://github.com/ehennestad/MatBox) and [MatBox Actions](https://github.com/ehennestad/matbox-actions) for continuous integration 
@@ -23,6 +24,20 @@ In the new repository:
    gh secret set DEPLOY_KEY < deploy_key
    rm deploy_key deploy_key.pub
    ```
+
+## Create a toolbox with a coding agent
+
+The `new-matlab-toolbox` skill in [`skills/new-matlab-toolbox`](skills/new-matlab-toolbox/SKILL.md) has a coding agent create the toolbox repository for you. The agent asks for the configuration values, generates the toolbox locally with the template's generator, and creates and pushes the GitHub repository with `gh`. It asks for confirmation before installing Python packages and before anything is sent to GitHub. The deploy key and the Codecov token are left for you to add.
+
+The skill needs `git`, `gh` and `python3`, on macOS, Linux or Windows inside WSL. On Windows outside WSL, the skill points you to the step-by-step instructions above instead.
+
+Install the skill with the [GitHub CLI](https://cli.github.com/manual/gh_skill_install):
+
+```bash
+gh skill install ehennestad/matlab-toolbox-template new-matlab-toolbox --scope user
+```
+
+Add `--agent claude-code`, `--agent codex` or another agent to choose which agent the skill is installed for. Without a version, `gh skill install` installs the skill from the latest release, and the skill generates the toolbox from that same release. To use a specific release, add it to the skill name, for example `new-matlab-toolbox@v0.1.0`.
 
 ## Configuration reference
 
