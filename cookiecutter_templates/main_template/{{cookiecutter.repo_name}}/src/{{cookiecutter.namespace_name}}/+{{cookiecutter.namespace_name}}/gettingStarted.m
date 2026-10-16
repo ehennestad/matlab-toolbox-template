@@ -26,8 +26,7 @@ function gettingStarted()
     
     % Display examples
     fprintf('Examples:\n');
-    % toolboxdir returns the folder that contains the {{ cookiecutter.namespace_name }} folder
-    examplesDir = fullfile({{ cookiecutter.namespace_name }}.toolboxdir(), '{{ cookiecutter.namespace_name }}', 'examples');
+    examplesDir = fullfile({{ cookiecutter.namespace_name }}.toolboxdir(), 'examples');
     if isfolder(examplesDir)
         exampleFiles = dir(fullfile(examplesDir, '*.m'));
         if ~isempty(exampleFiles)

@@ -7,6 +7,7 @@ classdef ToolboxTest <  matlab.unittest.TestCase
             pathStr = {{cookiecutter.namespace_name}}.toolboxdir();
             testCase.verifyClass(pathStr, 'char')
             testCase.verifyTrue(isfolder(pathStr))
+            testCase.verifyTrue(isfile(fullfile(pathStr, 'Contents.m')))
         end
 
         function testToolboxVersion(testCase)
