@@ -104,7 +104,7 @@ Do not work around a check.
 
 - Show the user the file tree and the generated `README.md`.
 - If `dependencies` lists products other than `MATLAB`, CI does not install them yet. In
-  `.github/workflows/test-code.yml` and `.github/workflows/prepare-release.yml`, replace the commented block
+  `.github/workflows/run-tests.yml` and `.github/workflows/prepare-release.yml`, replace the commented block
   (`# matlab_products: >` and the two commented example lines under it) with the key and one product per line,
   indented two spaces deeper than the key, with underscores for spaces:
 
