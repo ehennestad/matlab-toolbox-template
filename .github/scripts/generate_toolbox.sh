@@ -14,7 +14,12 @@ output_dir="$1"
 project_name="${GITHUB_REPOSITORY##*/}"
 render_dir="$(mktemp -d)"
 
-license=$(python3 -c "import yaml; print(yaml.safe_load(open('config.yaml'))['repository']['license'])")
+# Empty when config.yaml has no repository.license or sets it to null
+license=$(python3 -c "
+import yaml
+config = yaml.safe_load(open('config.yaml')) or {}
+print((config.get('repository') or {}).get('license') or '')
+")
 
 for template in main_template gh-badges_template; do
     # render_cookiecutter_template.py copies the template into this folder
@@ -23,7 +28,9 @@ for template in main_template gh-badges_template; do
     python3 .github/scripts/render_cookiecutter_template.py "$template"
 
     if [ "$template" = "main_template" ]; then
-        if [ -f "resources/licenses/${license}.txt" ]; then
+        if [ -z "$license" ]; then
+            echo "No license specified in config.yaml"
+        elif [ -f "resources/licenses/${license}.txt" ]; then
             cp "resources/licenses/${license}.txt" "/tmp/temp_${template}/{{cookiecutter.repo_name}}/LICENSE"
         else
             echo "Warning: License '${license}' not found"
