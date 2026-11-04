@@ -21,7 +21,9 @@ concurrency:
 
 jobs:
   run-tests:
-    if: github.run_number > 1
+    # Skips the commit that creates a repository from the template, and the
+    # template repository itself, which has no src folder to test
+    if: ${{ github.run_number > 1 && !endsWith(github.repository, '/matlab-toolbox-template') }}
     name: Analyse and test code
     uses: ehennestad/matbox-actions/.github/workflows/test-code-workflow.yml@v1
     with:
