@@ -1,6 +1,7 @@
 {
     "Namespace" : "{{cookiecutter.namespace_name}}",
     "RootFilesToPackage": ["LICENSE"],
+    "MltbxFileName": "{{cookiecutter.repo_name}}",
     "ToolboxOptions": {
         "Identifier": "{{cookiecutter.toolbox_identifier}}",
         "ToolboxName": {{ cookiecutter.toolbox_name | tojson }},
