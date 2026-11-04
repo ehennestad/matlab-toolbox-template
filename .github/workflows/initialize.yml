@@ -1,7 +1,10 @@
 name: Initialize Repository from Templates
 
 on:
+  # A tag push runs the workflow even with a paths filter, so the branch
+  # filter is what keeps tag pushes out
   push:
+    branches: main
     paths:
       - 'config.yaml'
   workflow_dispatch:
@@ -9,7 +12,7 @@ on:
 jobs:
   check_write_permissions:
     name: Check Write Permissions
-    if: github.run_number > 1
+    if: ${{ github.run_number > 1 && !endsWith(github.repository, '/matlab-toolbox-template') }}
     uses: ./.github/workflows/reusable-check-push-permission.yml
 
   initialize:
